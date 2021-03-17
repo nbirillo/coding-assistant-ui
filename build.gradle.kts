@@ -1,101 +1,63 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-
 plugins {
-    id("org.jetbrains.intellij") version "0.4.22"
     java
-    kotlin("jvm") version "1.3.72"
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("jvm") version "1.4.30"
+    id("org.jetbrains.intellij") version "0.7.2"
     id("com.github.johnrengelman.shadow") version "5.1.0"
-    id("org.openjfx.javafxplugin") version "0.0.8"
-    id("com.gluonhq.client-gradle-plugin") version "0.0.11"
     id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
+    kotlin("plugin.serialization") version "1.4.30"
+    id("org.openjfx.javafxplugin") version "0.0.9"
+    id("com.gluonhq.client-gradle-plugin") version "0.1.38"
 }
 
-group = "org.jetbrains.research.ml.tasktracker"
-version = "1.1"
+group = "org.jetbrains.research.ml.coding.assistant.ui"
+version = "1.0"
 
 repositories {
-    maven (url = "https://www.jetbrains.com/intellij-repository/releases")
-    maven (url = "https://jetbrains.bintray.com/intellij-third-party-dependencies")
-    maven (url = "https://nexus.gluonhq.com/nexus/content/repositories/releases/")
-    maven (url = "https://jitpack.io")
+    maven(url = "https://www.jetbrains.com/intellij-repository/releases")
+    maven(url = "https://jetbrains.bintray.com/intellij-third-party-dependencies")
+    maven(url = "https://nexus.gluonhq.com/nexus/content/repositories/releases/")
+    maven(url = "https://jitpack.io")
 
     mavenCentral()
     jcenter()
     google()
 }
 
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
-    implementation("com.opencsv","opencsv", "5.0")
-    implementation("joda-time", "joda-time", "2.9.2")
-    implementation("org.apache.commons", "commons-csv", "1.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc-218")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.20")
+    implementation("com.opencsv", "opencsv", "5.4")
+    implementation("joda-time", "joda-time", "2.10.10")
+    implementation("org.apache.commons", "commons-csv", "1.8")
     // https://mvnrepository.com/artifact/com.gluonhq/charm-glisten
-    implementation("com.gluonhq", "charm-glisten", "6.0.1")
-    implementation("com.google.code.gson", "gson", "2.8.5")
-    implementation("com.squareup.okhttp3", "okhttp", "4.2.2")
-//    implementation("org.controlsfx:controlsfx:11.0.3")
+    implementation("com.gluonhq", "charm-glisten", "6.0.2")
+    implementation("com.google.code.gson", "gson", "2.8.6")
+    implementation("com.squareup.okhttp3", "okhttp", "4.9.0")
     compile("com.google.auto.service:auto-service:1.0-rc7")
     implementation("org.eclipse.mylyn.github", "org.eclipse.egit.github.core", "2.1.5")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.9.1")
-    // https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j (used for unzipping required plugins)
-    implementation("net.lingala.zip4j", "zip4j", "2.6.1")
+    implementation("net.lingala.zip4j", "zip4j", "2.7.0")
     implementation("com.github.holgerbrandl:krangl:v0.13")
-
-    testCompile("junit", "junit", "4.12")
 }
 
-/*
-   Uncomment for testing with Rider IDE
-*/
-//tasks.getByName<org.jetbrains.intellij.tasks.IntelliJInstrumentCodeTask>("instrumentCode") {
-//    setCompilerVersion("192.6817.32")
-//}
-//intellij {
-//    type = "RD"
-//    version = "2019.2-SNAPSHOT"
-//    downloadSources = false
-//    intellij.updateSinceUntilBuild = false
-//}
-
-
-/*
-   Uncomment for testing with Intellij IDEA
-*/
 intellij {
-    version = "2020.3"
+    type = "PC"
+    version = "2020.3.3"
+    downloadSources = false
+    setPlugins("PythonCore")
+    updateSinceUntilBuild = true
 }
 
-
-/*
-   Uncomment for testing with PyCharm IDE
-*/
-//intellij {
-//    version = "2019.2.3"
-//    type = "PY"
-//}
-
-
-intellij {
-    val ideVersion = System.getenv().getOrDefault(
-        "CODE_TRACKER_IDEA_VERSION",
-        "201.6668.113"
-    )
-    println("Using ide version: $ideVersion")
-    version = ideVersion
-    pluginName = "code-tracker-plugin"
-    downloadSources = true
-    sameSinceUntilBuild = false
-    updateSinceUntilBuild = false
+ktlint {
+    enableExperimentalRules.set(true)
 }
 
 javafx {
-    version = "15"
+    version = "16"
     modules("javafx.controls", "javafx.fxml", "javafx.swing")
     configuration = "compileOnly"
 }
@@ -103,26 +65,37 @@ javafx {
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
-tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
-    changeNotes("""
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>""")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
 
 gluonClient {
-    reflectionList = arrayListOf("javafx.fxml.FXMLLoader", "com.gluon.hello.views.HelloPresenter",
-        "javafx.scene.control.Button", "javafx.scene.control.Label")
-}
-tasks.withType<ShadowJar> {
-    project.logger.warn("Don't forget to:\n" +
-            "- set your remote server as baseUrl in QueryExecutor class\n" +
-            "- turn OFF org.jetbrains.research.ml.tasktracker.Plugin.testMode")
+    reflectionList = arrayListOf(
+        "javafx.fxml.FXMLLoader", "com.gluon.hello.views.HelloPresenter",
+        "javafx.scene.control.Button", "javafx.scene.control.Label"
+    )
 }
 
-tasks.withType<Wrapper> {
-    gradleVersion = "6.8"
+tasks {
+    withType<JavaCompile> {
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
+    }
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
+
+    withType<ShadowJar> {
+        project.logger.warn(
+            "Don't forget to:\n" +
+                    "- set your remote server as baseUrl in QueryExecutor class\n" +
+                    "- turn OFF org.jetbrains.research.ml.codingAssistant.Plugin.testMode"
+        )
+    }
+
+    withType<Wrapper> {
+        gradleVersion = "6.8"
+    }
 }
+
+// According to this topic:
+// https://intellij-support.jetbrains.com/hc/en-us/community/posts/360010164960-Build-Intellij-plugin-in-IDEA-2019-1-2020-3?page=1#community_comment_360002517940
+tasks.withType<org.jetbrains.intellij.tasks.BuildSearchableOptionsTask>()
+    .forEach { it.enabled = false }
