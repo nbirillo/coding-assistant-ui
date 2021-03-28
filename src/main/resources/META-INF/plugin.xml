@@ -5,6 +5,7 @@
 
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.python</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="org.jetbrains.research.ml.codingAssistant.InitActivity"/>
@@ -13,4 +14,10 @@
         <writingAccessProvider implementation="org.jetbrains.research.ml.codingAssistant.tracking.PluginAccessProvider"/>
     </extensions>
 
+    <actions>
+        <action id="org.jetbrains.research.ml.codingAssistant.hint.HintGenerationAction"
+                class="org.jetbrains.research.ml.codingAssistant.hint.HintGenerationAction" text="Show Hint">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
