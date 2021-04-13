@@ -42,12 +42,18 @@ dependencies {
     implementation("org.eclipse.mylyn.github", "org.eclipse.egit.github.core", "2.1.5")
     implementation("net.lingala.zip4j", "zip4j", "2.7.0")
     implementation("com.github.holgerbrandl:krangl:v0.13")
+
+    implementation("io.github.nbirillo.coding.assistant:coding-assistant") {
+        version {
+            branch = "feature/diff-apply"
+        }
+    }
 }
 
 intellij {
     type = "PC"
     version = "2020.3.3"
-    downloadSources = false
+    downloadSources = true
     setPlugins("PythonCore")
     updateSinceUntilBuild = true
 }

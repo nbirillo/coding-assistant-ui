@@ -1,8 +1,9 @@
 package org.jetbrains.research.ml.codingAssistant.ui.window
 
-import com.intellij.diff.*
+import com.intellij.diff.DiffContentFactoryEx
+import com.intellij.diff.DiffDialogHints
+import com.intellij.diff.DiffManager
 import com.intellij.diff.chains.SimpleDiffRequestChain
-import com.intellij.diff.requests.DiffRequest
 import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.diff.tools.simple.SimpleDiffTool
 import com.intellij.diff.util.DiffUserDataKeysEx
@@ -18,4 +19,3 @@ fun DiffManager.showHintDiff(project: Project, original: String, hint: String) {
     chain.putUserData(DiffUserDataKeysEx.FORCE_DIFF_TOOL, SimpleDiffTool.INSTANCE)
     HintDiffWindow(project, chain, DiffDialogHints.MODAL).show()
 }
-
