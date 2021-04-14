@@ -44,7 +44,7 @@ object StoredInfoWrapper {
     private const val storedInfoFileName = "storedInfo.txt"
     private val storedInfoFilePath = "${taskTrackerFolderPath}/$storedInfoFileName"
     private val json by lazy {
-        Json(JsonConfiguration.Stable)
+        Json { allowStructuredMapKeys = true }
     }
     private val serializer = StoredInfo.serializer()
 
@@ -55,7 +55,7 @@ object StoredInfoWrapper {
         if (!file.exists()) {
             return StoredInfo()
         }
-        return json.parse(serializer, file.readText())
+        return json.decodeFromString(serializer, file.readText())
     }
 
     fun updateStoredInfo(surveyInfo: Map<String, String>? = null,
@@ -68,7 +68,7 @@ object StoredInfoWrapper {
     private fun writeStoredInfo() {
         val file = File(storedInfoFilePath)
         val writer = PrintWriter(file)
-        writer.print(json.stringify(serializer, info))
+        writer.print(json.encodeToString(serializer, info))
         writer.close()
     }
 }

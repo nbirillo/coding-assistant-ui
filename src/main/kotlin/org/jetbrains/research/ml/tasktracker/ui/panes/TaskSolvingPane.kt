@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Polygon
 import javafx.scene.text.Text
 import org.jetbrains.research.ml.tasktracker.Plugin
+import org.jetbrains.research.ml.tasktracker.hint.HintHandler
 import org.jetbrains.research.ml.tasktracker.server.PluginServer
 import org.jetbrains.research.ml.tasktracker.tracking.TaskFileHandler
 import org.jetbrains.research.ml.tasktracker.ui.panes.util.*
@@ -99,8 +100,9 @@ class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, 
             val currentTask = TaskChoosingUiData.chosenTask.currentValue
             currentTask?.let {
                 ApplicationManager.getApplication().invokeLater {
+                    HintHandler.showHintDiff(it, project)
                     PluginServer.sendDataForTask(it, project)
-                    TaskFileHandler.closeTaskFiles(it)
+//                    TaskFileHandler.closeTaskFiles(it)
                 }
             }
             changeVisiblePane(TaskChoosingControllerManager)

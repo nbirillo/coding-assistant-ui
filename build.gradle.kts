@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.jetbrains.intellij") version "0.4.22"
     java
-    kotlin("jvm") version "1.3.72"
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("jvm") version  "1.4.30"
+    kotlin("plugin.serialization") version  "1.4.30"
     id("com.github.johnrengelman.shadow") version "5.1.0"
     id("org.openjfx.javafxplugin") version "0.0.8"
     id("com.gluonhq.client-gradle-plugin") version "0.0.11"
@@ -30,8 +30,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc-218")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.20")
     implementation("com.opencsv","opencsv", "5.0")
     implementation("joda-time", "joda-time", "2.9.2")
     implementation("org.apache.commons", "commons-csv", "1.7")
@@ -49,16 +49,16 @@ dependencies {
 
     testCompile("junit", "junit", "4.12")
 
-//    implementation("io.github.nbirillo.coding.assistant:coding-assistant-core") {
-//        version {
-//            branch = "develop"
-//        }
-//    }
-//    implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
-//        version {
-//            branch = "master"
-//        }
-//    }
+    implementation("io.github.nbirillo.coding.assistant:coding-assistant-core") {
+        version {
+            branch = "test/pycharm-2020.1"
+        }
+    }
+    implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
+        version {
+            branch = "tests/pycharm-2020.1"
+        }
+    }
 }
 
 /*
@@ -86,19 +86,13 @@ intellij {
 /*
    Uncomment for testing with PyCharm IDE
 */
-intellij {
-//    version = "2019.2.3"
-    type = "PY"
-}
 
 
 intellij {
-    val ideVersion = System.getenv().getOrDefault(
-        "CODE_TRACKER_IDEA_VERSION",
-        "201.6668.115"
-    )
-    println("Using ide version: $ideVersion")
+    type = "PC"
     version = "2020.1"
+    setPlugins("PythonCore")
+
     pluginName = "code-tracker-plugin"
     downloadSources = true
     sameSinceUntilBuild = false
