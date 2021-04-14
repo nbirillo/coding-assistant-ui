@@ -48,6 +48,17 @@ dependencies {
     implementation("com.github.holgerbrandl:krangl:v0.13")
 
     testCompile("junit", "junit", "4.12")
+
+//    implementation("io.github.nbirillo.coding.assistant:coding-assistant-core") {
+//        version {
+//            branch = "develop"
+//        }
+//    }
+//    implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
+//        version {
+//            branch = "master"
+//        }
+//    }
 }
 
 /*
@@ -75,19 +86,19 @@ intellij {
 /*
    Uncomment for testing with PyCharm IDE
 */
-//intellij {
+intellij {
 //    version = "2019.2.3"
-//    type = "PY"
-//}
+    type = "PY"
+}
 
 
 intellij {
     val ideVersion = System.getenv().getOrDefault(
         "CODE_TRACKER_IDEA_VERSION",
-        "201.6668.113"
+        "201.6668.115"
     )
     println("Using ide version: $ideVersion")
-    version = ideVersion
+    version = "2020.1"
     pluginName = "code-tracker-plugin"
     downloadSources = true
     sameSinceUntilBuild = false
