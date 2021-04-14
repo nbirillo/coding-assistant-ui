@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Polygon
 import javafx.scene.text.Text
 import org.jetbrains.research.ml.codingAssistant.Plugin
+import org.jetbrains.research.ml.codingAssistant.hint.HintHandler
 import org.jetbrains.research.ml.codingAssistant.server.PluginServer
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import org.jetbrains.research.ml.codingAssistant.ui.panes.util.*
@@ -143,6 +144,7 @@ class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, 
             val currentTask = TaskChoosingUiData.chosenTask.currentValue
             currentTask?.let {
                 ApplicationManager.getApplication().invokeLater {
+                    HintHandler.showHintDiff(it, project)
                     PluginServer.sendDataForTask(it, project)
                     TaskFileHandler.closeTaskFiles(it)
                 }

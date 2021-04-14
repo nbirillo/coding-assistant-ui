@@ -43,9 +43,14 @@ dependencies {
     implementation("net.lingala.zip4j", "zip4j", "2.7.0")
     implementation("com.github.holgerbrandl:krangl:v0.13")
 
-    implementation("io.github.nbirillo.coding.assistant:coding-assistant") {
+    implementation("io.github.nbirillo.coding.assistant:coding-assistant-core") {
         version {
-            branch = "feature/diff-apply"
+            branch = "develop"
+        }
+    }
+    implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
+        version {
+            branch = "master"
         }
     }
 }

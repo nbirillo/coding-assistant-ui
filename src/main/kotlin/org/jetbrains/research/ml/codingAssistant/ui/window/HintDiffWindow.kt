@@ -7,7 +7,6 @@ import com.intellij.diff.impl.DiffWindow
 import com.intellij.diff.util.DiffUserDataKeys
 import com.intellij.diff.util.DiffUtil
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.WindowWrapper
 import com.intellij.openapi.util.BooleanGetter
 import com.intellij.openapi.util.Computable
@@ -16,36 +15,34 @@ import com.intellij.util.ui.UIUtil
 import java.awt.*
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.border.Border
 import kotlin.math.max
 
 class HintDiffWindow(
     project: Project,
     chain: DiffRequestChain,
-    hints: DiffDialogHints
+    hints: DiffDialogHints,
+    private val onCloseHandler: BooleanGetter,
+    private val onApplyHandler: BooleanGetter
 ) : DiffWindow(project, chain, hints) {
     private var myWindowWrapper: WindowWrapper? = null
     private var myProcessor: DiffRequestProcessor? = null
 
     override fun init() {
-        if (myWindowWrapper != null)
+        if (myWindowWrapper != null) {
             return
+        }
 
         val dialogGroupKey = myProcessor?.getContextUserData(DiffUserDataKeys.DIALOG_GROUP_KEY) ?: "DiffContextDialog"
 
         val processor = createProcessor()
-        val builder = HintWindowWrapperBuilder(DiffUtil.getWindowMode(myHints), MyPanel(processor.component)).apply {
-            project = myProject
-            parent = myHints.parent
-            dimensionServiceKey = dialogGroupKey
-            preferredFocusedComponent = Computable { myProcessor?.preferredFocusedComponent }
-            onShowCallback = Runnable { myProcessor?.updateRequest() }
-            onCloseHandler = BooleanGetter {
-                true
-            }
-            onApplyHandler = BooleanGetter {
-                true
-            }
+        val builder = HintWindowWrapperBuilder(DiffUtil.getWindowMode(myHints), MyPanel(processor.component)).also {
+            it.project = myProject
+            it.parent = myHints.parent
+            it.dimensionServiceKey = dialogGroupKey
+            it.preferredFocusedComponent = Computable { myProcessor?.preferredFocusedComponent }
+            it.onShowCallback = Runnable { myProcessor?.updateRequest() }
+            it.onCloseHandler = onCloseHandler
+            it.onApplyHandler = onApplyHandler
         }
         val windowWrapper = builder.build()
         windowWrapper.setImages(DiffUtil.DIFF_FRAME_ICONS.value)

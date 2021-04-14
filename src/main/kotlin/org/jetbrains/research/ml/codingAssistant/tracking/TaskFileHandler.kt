@@ -17,6 +17,9 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtilCore.isEqualOrAncestor
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
 import com.intellij.util.io.ReadOnlyAttributeUtil
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.research.ml.codingAssistant.Plugin
@@ -30,6 +33,7 @@ import org.jetbrains.research.ml.codingAssistant.ui.panes.TaskChoosingUiData
 import org.jetbrains.research.ml.codingAssistant.ui.panes.TaskSolvingControllerManager
 import java.io.File
 import java.io.IOException
+import javax.print.DocFlavor
 
 object TaskFileHandler {
     private val logger: Logger = Logger.getInstance(javaClass)
@@ -147,6 +151,24 @@ object TaskFileHandler {
             setReadOnly(it, false)
             FileEditorManager.getInstance(project).openFile(it, true, true)
         }
+    }
+
+    fun setFileContent(project: Project, task: Task, content: ByteArray) {
+        val virtualFile = projectToTaskToFiles[project]?.get(task)
+            ?: throw IllegalStateException(
+                "A file for the task ${task.key} " +
+                        "in the project ${project.name} does not exist"
+            )
+        virtualFile.setBinaryContent(content)
+    }
+
+    fun getPsiFile(project: Project, task: Task): PsiFile {
+        val document = getDocument(project, task)
+        return PsiDocumentManager.getInstance(project).getPsiFile(document)
+            ?: throw IllegalStateException(
+                "Cannot fetch psi file from a document $document " +
+                        "in the project ${project.name} does not exist"
+            )
     }
 
     fun getDocument(project: Project, task: Task): Document {

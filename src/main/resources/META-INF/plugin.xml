@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin  xmlns:xi="http://www.w3.org/2001/XInclude">
     <id>org.jetbrains.research.ml.coding.assistant.ui</id>
     <name>Coding Assistant</name>
     <vendor>JetBrains Research</vendor>
@@ -6,6 +6,8 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.python</depends>
+
+    <xi:include href="/META-INF/coding-assistant-core-settings.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="org.jetbrains.research.ml.codingAssistant.InitActivity"/>

@@ -109,10 +109,11 @@ class HintDialogWindowWrapper(builder: HintWindowWrapperBuilder) : WindowWrapper
 
     init {
         val parent = builder.parent
-        myDialog = if (parent != null)
+        myDialog = if (parent != null) {
             MyDialogWrapper(parent, builder.myComponent)
-        else
+        } else {
             MyDialogWrapper(builder.project, builder.myComponent)
+        }
         myDialog.setParameters(
             builder.dimensionServiceKey,
             builder.preferredFocusedComponent,
