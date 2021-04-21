@@ -51,12 +51,12 @@ dependencies {
 
     implementation("io.github.nbirillo.coding.assistant:coding-assistant-core") {
         version {
-            branch = "test/pycharm-2020.1"
+            branch = "test/new-inverse-transformations"
         }
     }
     implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
         version {
-            branch = "tests/pycharm-2020.1"
+            branch = "tests/new-inverse-transformations"
         }
     }
 }
@@ -78,9 +78,9 @@ dependencies {
 /*
    Uncomment for testing with Intellij IDEA
 */
-intellij {
-    version = "2020.3"
-}
+//intellij {
+//    version = "2020.3"
+//}
 
 
 /*
