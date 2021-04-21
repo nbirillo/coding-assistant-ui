@@ -5,7 +5,6 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -23,13 +22,12 @@ object HintHandler {
     fun showHintDiff(task: Task, project: Project) {
         val psiFile = TaskFileHandler.getPsiFile(project, task)
         val metaInfo = SurveyUiData.createMetaInfoForTask(task)
-        val copyPsiFile = createDummyPsiFile(project, psiFile.text)
-        val hintFile = project.service<DumbService>().runReadActionInSmartMode<PsiFile?> {
-            CodingAssistantManager.getHintedFile(copyPsiFile, metaInfo)
-        }
+        TaskFileHandler.setTempFileContent(project, psiFile.text)
+        val tempPsiFile = TaskFileHandler.getTempPsiFile(project)
+        TaskFileHandler.commitTempFile(project)
+        val hintFile = CodingAssistantManager.getHintedFile(tempPsiFile, metaInfo)
         val hintText = hintFile?.text ?: TODO("log error")
         val diffManager = DiffManager.getInstance()
-        deleteDummyFile(project)
         diffManager.showHintDiff(
             project,
             psiFile.text,
@@ -40,37 +38,6 @@ object HintHandler {
             }
         )
     }
-
-    private fun commitDummyDocument(project: Project) {
-        val file = File("${project.basePath}/.tmp.py")
-        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file) ?: return
-        val document = FileDocumentManager.getInstance().getDocument(virtualFile) ?: return
-        project.service<PsiDocumentManager>().commitDocument(document)
-    }
-
-    private fun createDummyPsiFile(project: Project, content: String): PsiFile {
-        val document = createDummyDocument(project)
-        WriteCommandAction.runWriteCommandAction(project) {
-            document.setText(content)
-        }
-        commitDummyDocument(project)
-        return PsiDocumentManager.getInstance(project).getPsiFile(document)!!
-    }
-
-    private fun deleteDummyFile(project: Project) {
-        val file = File("${project.basePath}/.tmp.py")
-        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)!!
-        LocalFileSystem.getInstance().deleteFile(this, virtualFile)
-        LocalFileSystem.getInstance().refresh(true)
-    }
-
-    private fun createDummyDocument(project: Project): Document {
-        val file = File("${project.basePath}/.tmp.py")
-        FileUtil.createIfDoesntExist(file)
-        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)!!
-        return FileDocumentManager.getInstance().getDocument(virtualFile)!!
-    }
-
 }
 
 private fun SurveyUiData.createMetaInfoForTask(task: Task): MetaInfo {

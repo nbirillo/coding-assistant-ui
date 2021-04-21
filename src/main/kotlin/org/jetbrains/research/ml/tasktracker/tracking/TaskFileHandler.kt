@@ -2,6 +2,7 @@ package org.jetbrains.research.ml.tasktracker.tracking
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -38,6 +39,7 @@ object TaskFileHandler {
     private val logger: Logger = Logger.getInstance(javaClass)
     private val documentToTask: HashMap<Document, Task> = HashMap()
     private val projectToTaskToFiles: HashMap<Project, HashMap<Task, VirtualFile>> = HashMap()
+    private val projectToTempFile: HashMap<Project, VirtualFile> = HashMap()
     private val projectsToInit = arrayListOf<Project>()
 
     private val listener by lazy {
@@ -57,6 +59,7 @@ object TaskFileHandler {
         PluginServer.tasks.forEach { task ->
             SurveyUiData.programmingLanguage.currentValue?.let {
                 val virtualFile = getOrCreateFile(project, task, it)
+                addTempFile(project, it)
                 virtualFile?.let {
                     addTaskFile(it, task, project)
                     ApplicationManager.getApplication().invokeAndWait {
@@ -122,6 +125,34 @@ object TaskFileHandler {
         return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)
     }
 
+    fun setTempFileContent(project: Project, content: String) {
+        val virtualFile = projectToTempFile[project] ?: error("")
+        val document = FileDocumentManager.getInstance().getDocument(virtualFile) ?: error("")
+        WriteCommandAction.runWriteCommandAction(project) {
+            document.setText(content)
+        }
+    }
+
+    fun commitTempFile(project: Project) {
+        val virtualFile = projectToTempFile[project] ?: error("")
+        val document = FileDocumentManager.getInstance().getDocument(virtualFile) ?: error("")
+        PsiDocumentManager.getInstance(project).commitDocument(document)
+    }
+
+    fun getTempPsiFile(project: Project): PsiFile {
+        val virtualFile = projectToTempFile[project] ?: error("")
+        val document = FileDocumentManager.getInstance().getDocument(virtualFile) ?: error("")
+        return PsiDocumentManager.getInstance(project).getPsiFile(document) ?: error("")
+    }
+
+    private fun addTempFile(project: Project, language: Language) {
+        val relativeFilePath = TaskFileInitContentProvider.getLanguageFolderRelativePath(language)
+        val file = File("${project.basePath}/$relativeFilePath/.tmp.py")
+        FileUtil.createIfDoesntExist(file)
+        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)!!
+        projectToTempFile[project] = virtualFile
+    }
+
     /**
      *  If [documentToTask] doesn't have this [task] then we didn't track the document. Once document is added,
      *  DocumentListener is connected and tracks all document changes
@@ -164,7 +195,7 @@ object TaskFileHandler {
             FileEditorManager.getInstance(project).openFile(it, true, true)
         }
     }
-    
+
     fun setFileContent(project: Project, task: Task, content: CharSequence) {
         val document = getDocument(project, task)
         document.setText(content)
