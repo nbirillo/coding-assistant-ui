@@ -48,6 +48,8 @@ class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, 
 
     @FXML lateinit var sendSolutionButton: Button
     @FXML lateinit var sendSolutionText: Text
+    @FXML lateinit var hintButton: Button
+    @FXML lateinit var hintText: Text
     @FXML lateinit var backToTasksButton: Button
     @FXML lateinit var backToTasksText: Text
 
@@ -100,15 +102,23 @@ class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, 
             val currentTask = TaskChoosingUiData.chosenTask.currentValue
             currentTask?.let {
                 ApplicationManager.getApplication().invokeLater {
-                    HintHandler.showHintDiff(it, project)
                     PluginServer.sendDataForTask(it, project)
-//                    TaskFileHandler.closeTaskFiles(it)
+                    TaskFileHandler.closeTaskFiles(it)
                 }
             }
             changeVisiblePane(TaskChoosingControllerManager)
 
         }
         backToTasksButton.onMouseClicked { changeVisiblePane(TaskChoosingControllerManager) }
+        hintButton.onMouseClicked {
+            val currentTask = TaskChoosingUiData.chosenTask.currentValue
+            currentTask?.let {
+                ApplicationManager.getApplication().invokeLater {
+                    HintHandler.showHintDiff(it, project)
+//                    PluginServer.sendDataForTask(it, project)
+                }
+            }
+        }
     }
 
     private fun makeTranslatable() {
