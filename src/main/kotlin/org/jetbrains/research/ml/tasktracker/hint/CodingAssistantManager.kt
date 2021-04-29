@@ -1,14 +1,14 @@
 package org.jetbrains.research.ml.tasktracker.hint
 
 import com.intellij.psi.PsiFile
-import org.jetbrains.research.ml.coding.assistant.dataset.model.DatasetTask
 import org.jetbrains.research.ml.coding.assistant.dataset.model.MetaInfo
 import org.jetbrains.research.ml.coding.assistant.hint.HintFactoryImpl
 import org.jetbrains.research.ml.coding.assistant.hint.HintManager
 import org.jetbrains.research.ml.coding.assistant.hint.HintManagerImpl
-import org.jetbrains.research.ml.coding.assistant.solutionSpace.repo.SolutionSpaceFileRepository
+import org.jetbrains.research.ml.coding.assistant.solutionSpace.repo.SolutionSpaceCachedRepository
+import org.jetbrains.research.ml.coding.assistant.solutionSpace.repo.SolutionSpaceDirectoryRepository
 import org.jetbrains.research.ml.coding.assistant.system.finder.ParallelVertexFinder
-import org.jetbrains.research.ml.coding.assistant.system.hint.NaiveHintVertexCalculator
+import org.jetbrains.research.ml.coding.assistant.system.hint.PoissonPathHintVertexCalculator
 import org.jetbrains.research.ml.coding.assistant.system.matcher.EditPartialSolutionMatcher
 import java.io.File
 
@@ -17,15 +17,17 @@ object CodingAssistantManager : HintManager {
         return manager.getHintedFile(psiFragment, metaInfo)
     }
 
-    private val MOCK_FILE = File(
-        "/Users/artembobrov/Documents/output/voting_solution_space.json"
+    private val repository = SolutionSpaceCachedRepository(
+        SolutionSpaceDirectoryRepository(
+            File("/Users/artembobrov/Documents/masters/ast-transform/coding-assistant/output")
+        )
     )
 
     private val manager = HintManagerImpl(
         HintFactoryImpl(
-            SolutionSpaceFileRepository(mapOf(DatasetTask.VOTING to MOCK_FILE)),
+            repository,
             ParallelVertexFinder(EditPartialSolutionMatcher),
-            NaiveHintVertexCalculator
+            PoissonPathHintVertexCalculator
         )
     )
 }

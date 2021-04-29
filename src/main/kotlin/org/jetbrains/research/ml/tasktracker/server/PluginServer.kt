@@ -64,9 +64,9 @@ object PluginServer {
         private set
     private var dataSendingResult: DataSendingResult = DataSendingResult.SUCCESS
 
-    fun checkItInitialized(project: Project) {
+    fun checkItInitialized(project: Project, completion: () -> Unit = {}) {
         if (serverConnectionResult == ServerConnectionResult.UNINITIALIZED) {
-            reconnect(project)
+            reconnect(project, completion)
         }
     }
 
@@ -74,12 +74,15 @@ object PluginServer {
     /**
      * Receives all data in background task and sends results about receiving
      */
-    fun reconnect(project: Project) {
+    fun reconnect(project: Project, completion: () -> Unit = {}) {
         if (serverConnectionResult != ServerConnectionResult.LOADING) {
             logger.info("${Plugin.PLUGIN_NAME} PluginServer reconnect, current thread is ${Thread.currentThread().name}")
             ProgressManager.getInstance().run(object : Backgroundable(project, "Getting data from server") {
                 override fun run(indicator: ProgressIndicator) {
-                    safeReceive { receiveData() }
+                    safeReceive {
+                        receiveData()
+                        completion()
+                    }
                 }
             })
         }
@@ -151,7 +154,7 @@ object PluginServer {
         ApplicationManager.getApplication().invokeAndWait {
             val document = TaskFileHandler.getDocument(project, task)
             ProgressManager.getInstance().run(
-                object : Backgroundable(project,"Sending task ${task.key} solution", false) {
+                object : Backgroundable(project, "Sending task ${task.key} solution", false) {
                     override fun run(indicator: ProgressIndicator) {
                         sendFileByDocument(document)
                     }

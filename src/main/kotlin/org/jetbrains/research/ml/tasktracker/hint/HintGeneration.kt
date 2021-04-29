@@ -1,22 +1,17 @@
 package org.jetbrains.research.ml.tasktracker.hint
 
 import com.intellij.diff.DiffManager
-import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.notification.NotificationDisplayType
+import com.intellij.notification.NotificationGroup
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFile
 import org.jetbrains.research.ml.coding.assistant.dataset.model.DatasetTask
 import org.jetbrains.research.ml.coding.assistant.dataset.model.MetaInfo
 import org.jetbrains.research.ml.tasktracker.models.Task
 import org.jetbrains.research.ml.tasktracker.tracking.TaskFileHandler
 import org.jetbrains.research.ml.tasktracker.ui.panes.SurveyUiData
 import org.jetbrains.research.ml.tasktracker.ui.window.showHintDiff
-import java.io.File
+
 
 object HintHandler {
     fun showHintDiff(task: Task, project: Project) {
@@ -26,7 +21,11 @@ object HintHandler {
         val tempPsiFile = TaskFileHandler.getTempPsiFile(project)
         TaskFileHandler.commitTempFile(project)
         val hintFile = CodingAssistantManager.getHintedFile(tempPsiFile, metaInfo)
-        val hintText = hintFile?.text ?: TODO("log error")
+        if (hintFile == null) {
+            showHintNotAvailableNotification(project)
+            return
+        }
+        val hintText = hintFile.text
         val diffManager = DiffManager.getInstance()
         diffManager.showHintDiff(
             project,
@@ -38,13 +37,22 @@ object HintHandler {
             }
         )
     }
+
+    private fun showHintNotAvailableNotification(project: Project) {
+        NOTIFICATION_GROUP.createNotification("Hint is not available for this code", NotificationType.ERROR)
+            .notify(project)
+    }
+
+    private val NOTIFICATION_GROUP =
+        NotificationGroup("Custom Notification Group", NotificationDisplayType.BALLOON, true)
+
 }
 
 private fun SurveyUiData.createMetaInfoForTask(task: Task): MetaInfo {
     return MetaInfo(
         age.uiValue.toFloat(),
         MetaInfo.ProgramExperience.createFromYearsAndMonths(peYears.uiValue, peMonths.uiValue),
-        null,
+        0.0,
         DatasetTask.createFromString(task.key)
     )
 }
@@ -52,9 +60,9 @@ private fun SurveyUiData.createMetaInfoForTask(task: Task): MetaInfo {
 private fun MetaInfo.ProgramExperience.Companion.createFromYearsAndMonths(
     years: Int,
     months: Int
-): MetaInfo.ProgramExperience? {
+): MetaInfo.ProgramExperience {
     val totalMonth = months + years * 12
     if (totalMonth < 0)
-        return null
+        throw IllegalArgumentException()
     return createFromMonths(totalMonth)
 }

@@ -51,12 +51,12 @@ dependencies {
 
     implementation("io.github.nbirillo.coding.assistant:coding-assistant-core") {
         version {
-            branch = "test/new-inverse-transformations"
+            branch = "rc-8"
         }
     }
     implementation("org.jetbrains.research.ml.ast.transformations:ast-transformations-core") {
         version {
-            branch = "tests/new-inverse-transformations"
+            branch = "develop-8"
         }
     }
 }
