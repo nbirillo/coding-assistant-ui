@@ -115,7 +115,6 @@ class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, 
             currentTask?.let {
                 ApplicationManager.getApplication().invokeLater {
                     HintHandler.showHintDiff(it, project)
-//                    PluginServer.sendDataForTask(it, project)
                 }
             }
         }
