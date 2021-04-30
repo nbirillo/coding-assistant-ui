@@ -17,8 +17,7 @@ class InitActivity : StartupActivity {
     override fun runActivity(project: Project) {
         Plugin.installRequiredPlugins(project)
         logger.info("${Plugin.PLUGIN_NAME}: run activity")
-        PluginServer.checkItInitialized(project) {
-            TaskFileHandler.addProject(project)
-        }
+        PluginServer.checkItInitialized(project)
+        TaskFileHandler.addProject(project)
     }
 }
