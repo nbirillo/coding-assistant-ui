@@ -44,25 +44,11 @@ internal object MainController {
         }
 
     init {
+        updateVisiblePane(PluginServer.serverConnectionResult)
         /* Subscribes to notifications about server connection result to update visible panes */
         subscribe(ServerConnectionNotifier.SERVER_CONNECTION_TOPIC, object : ServerConnectionNotifier {
             override fun accept(connection: ServerConnectionResult) {
-                logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection, current thread is ${Thread.currentThread().name}")
-                ApplicationManager.getApplication().invokeLater {
-                    logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection in application block, current thread is ${Thread.currentThread().name}")
-                    visiblePane = when (connection) {
-                        ServerConnectionResult.UNINITIALIZED -> LoadingControllerManager
-                        ServerConnectionResult.LOADING -> LoadingControllerManager
-                        ServerConnectionResult.FAIL -> {
-                            ErrorControllerManager.setRefreshAction { PluginServer.reconnect(it) }
-                            ErrorControllerManager
-                        }
-                        ServerConnectionResult.SUCCESS -> {
-                            contents.forEach { it.updatePanesToCreate() }
-                            SurveyControllerManager
-                        }
-                    }
-                }
+                updateVisiblePane(connection)
             }
         })
 
@@ -87,6 +73,25 @@ internal object MainController {
                 }
             }
         )
+    }
+
+    private fun updateVisiblePane(connection: ServerConnectionResult) {
+        logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection, current thread is ${Thread.currentThread().name}")
+        ApplicationManager.getApplication().invokeLater {
+            logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection in application block, current thread is ${Thread.currentThread().name}")
+            visiblePane = when (connection) {
+                ServerConnectionResult.UNINITIALIZED -> LoadingControllerManager
+                ServerConnectionResult.LOADING -> LoadingControllerManager
+                ServerConnectionResult.FAIL -> {
+                    ErrorControllerManager.setRefreshAction { PluginServer.reconnect(it) }
+                    ErrorControllerManager
+                }
+                ServerConnectionResult.SUCCESS -> {
+                    contents.forEach { it.updatePanesToCreate() }
+                    SurveyControllerManager
+                }
+            }
+        }
     }
 
     /*   RUN ON EDT (ToolWindowFactory takes care of it) */

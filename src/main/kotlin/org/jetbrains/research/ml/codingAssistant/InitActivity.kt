@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import org.jetbrains.research.ml.codingAssistant.server.PluginServer
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
+import java.util.concurrent.Executors
 
 
 class InitActivity : StartupActivity {
@@ -17,7 +18,7 @@ class InitActivity : StartupActivity {
     override fun runActivity(project: Project) {
         Plugin.installRequiredPlugins(project)
         logger.info("${Plugin.PLUGIN_NAME}: run activity")
-        PluginServer.checkItInitialized(project)
+        PluginServer.syncCheckItInitialized(project)
         TaskFileHandler.addProject(project)
     }
 }

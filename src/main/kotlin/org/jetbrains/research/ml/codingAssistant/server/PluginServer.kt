@@ -8,10 +8,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task.Backgroundable
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.Topic
+import okhttp3.internal.wait
 import org.jetbrains.research.ml.codingAssistant.Plugin
 import org.jetbrains.research.ml.codingAssistant.models.*
 import org.jetbrains.research.ml.codingAssistant.tracking.DocumentLogger
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.locks.ReentrantLock
 import java.util.function.Consumer
 
 enum class ServerConnectionResult {
@@ -70,6 +73,31 @@ object PluginServer {
         }
     }
 
+    fun syncCheckItInitialized(project: Project) {
+        if (serverConnectionResult == ServerConnectionResult.UNINITIALIZED) {
+            syncReconnect(project)
+        }
+    }
+
+    private fun syncReconnect(project: Project, completion: () -> Unit = {}) {
+        if (serverConnectionResult != ServerConnectionResult.LOADING) {
+            logger.info(
+                "${Plugin.PLUGIN_NAME} PluginServer reconnect, " +
+                        "current thread is ${Thread.currentThread().name}"
+            )
+            val countDownLatch = CountDownLatch(1)
+            ProgressManager.getInstance().run(object : Backgroundable(project, "Getting data from server") {
+                override fun run(indicator: ProgressIndicator) {
+                    safeReceive {
+                        receiveData()
+                        completion()
+                    }
+                    countDownLatch.countDown()
+                }
+            })
+            countDownLatch.await()
+        }
+    }
 
     /**
      * Receives all data in background task and sends results about receiving

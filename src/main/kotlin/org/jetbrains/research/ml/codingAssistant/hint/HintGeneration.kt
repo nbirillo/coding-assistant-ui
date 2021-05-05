@@ -15,21 +15,26 @@ import org.jetbrains.research.ml.codingAssistant.ui.window.showHintDiff
 
 object HintHandler {
     fun showHintDiff(task: Task, project: Project) {
-        val psiFile = TaskFileHandler.getPsiFile(project, task)
+        val studentPsiFile = TaskFileHandler.getPsiFile(project, task)
+        val studentCode = studentPsiFile.text
         val metaInfo = SurveyUiData.createMetaInfoForTask(task)
-        TaskFileHandler.setTempFileContent(project, psiFile.text)
+        TaskFileHandler.setTempFileContent(project, studentPsiFile.text)
         val tempPsiFile = TaskFileHandler.getTempPsiFile(project)
         TaskFileHandler.commitTempFile(project)
-        val hintFile = CodingAssistantManager.getHintedFile(tempPsiFile, metaInfo)
-        if (hintFile == null) {
+        val codeHint = CodingAssistantManager.getHintedFile(tempPsiFile, metaInfo)
+        if (codeHint == null) {
             showHintNotAvailableNotification(project)
             return
         }
-        val hintText = hintFile.text
+        val hintText = codeHint.psiFragment.text
+        if (hintText == studentCode && codeHint.vertexHint.hintVertex.isFinal) {
+            showSolutionIsCorrect(project)
+            return
+        }
         val diffManager = DiffManager.getInstance()
         diffManager.showHintDiff(
             project,
-            psiFile.text,
+            studentCode,
             hintText,
             onApplyHandler = {
                 TaskFileHandler.setFileContent(project, task, hintText)
@@ -37,6 +42,10 @@ object HintHandler {
             }
         )
     }
+
+    private fun showSolutionIsCorrect(project: Project) =
+        NOTIFICATION_GROUP.createNotification("Your code is correct. Try to submit your solution", NotificationType.INFORMATION)
+            .notify(project)
 
     private fun showHintNotAvailableNotification(project: Project) {
         NOTIFICATION_GROUP.createNotification("Hint is not available for this code", NotificationType.ERROR)

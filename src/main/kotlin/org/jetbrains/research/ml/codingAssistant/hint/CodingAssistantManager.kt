@@ -2,6 +2,7 @@ package org.jetbrains.research.ml.codingAssistant.hint
 
 import com.intellij.psi.PsiFile
 import org.jetbrains.research.ml.coding.assistant.dataset.model.MetaInfo
+import org.jetbrains.research.ml.coding.assistant.hint.CodeHint
 import org.jetbrains.research.ml.coding.assistant.hint.HintFactoryImpl
 import org.jetbrains.research.ml.coding.assistant.hint.HintManager
 import org.jetbrains.research.ml.coding.assistant.hint.HintManagerImpl
@@ -12,7 +13,7 @@ import org.jetbrains.research.ml.coding.assistant.system.hint.PoissonPathHintVer
 import org.jetbrains.research.ml.coding.assistant.system.matcher.EditPartialSolutionMatcher
 
 object CodingAssistantManager : HintManager {
-    override fun getHintedFile(psiFragment: PsiFile, metaInfo: MetaInfo): PsiFile? {
+    override fun getHintedFile(psiFragment: PsiFile, metaInfo: MetaInfo): CodeHint? {
         return manager.getHintedFile(psiFragment, metaInfo)
     }
 
@@ -20,11 +21,13 @@ object CodingAssistantManager : HintManager {
         SolutionSpaceResourcesDirectoryRepository(javaClass)
     )
 
-    private val manager = HintManagerImpl(
-        HintFactoryImpl(
-            repository,
-            ParallelVertexFinder(EditPartialSolutionMatcher),
-            PoissonPathHintVertexCalculator
+    private val manager = CancelRecoverHintManager(
+        HintManagerImpl(
+            HintFactoryImpl(
+                repository,
+                ParallelVertexFinder(EditPartialSolutionMatcher),
+                PoissonPathHintVertexCalculator
+            )
         )
     )
 }
