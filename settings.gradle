@@ -6,7 +6,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'tasktracker'
+rootProject.name = 'codingassistant'
 
 sourceControl {
     gitRepository(URI.create("https://github.com/nbirillo/coding-assistant.git")) {
