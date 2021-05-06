@@ -56,9 +56,9 @@ object TaskFileHandler {
         logger.info("Current chosen programming language is ${SurveyUiData.programmingLanguage.currentValue}")
         projectToTaskToFiles[project] = hashMapOf()
         PluginServer.tasks.forEach { task ->
-            SurveyUiData.programmingLanguage.currentValue?.let {
-                val virtualFile = getOrCreateFile(project, task, it)
-                addTempFile(project, it)
+            SurveyUiData.programmingLanguage.currentValue?.let { language ->
+                val virtualFile = getOrCreateFile(project, task, language)
+                addTempFile(project, language)
                 virtualFile?.let {
                     addTaskFile(it, task, project)
                     ApplicationManager.getApplication().invokeAndWait {
