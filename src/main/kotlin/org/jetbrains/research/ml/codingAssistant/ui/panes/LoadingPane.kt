@@ -13,14 +13,18 @@ import java.net.URL
 import java.util.*
 import kotlin.reflect.KClass
 
-
 object LoadingControllerManager : PaneControllerManager<LoadingController>() {
     override val canCreateContent: Boolean = true
     override val paneControllerClass: KClass<LoadingController> = LoadingController::class
     override val fxmlFilename: String = "loading-ui-form.fxml"
 }
 
-class LoadingController(project: Project, scale: Double, fxPanel: JFXPanel, id: Int) : PaneController(project, scale, fxPanel, id) {
+class LoadingController(
+    project: Project,
+    scale: Double,
+    fxPanel: JFXPanel,
+    id: Int
+) : PaneController(project, scale, fxPanel, id) {
     @FXML private lateinit var loadingText: Text
     @FXML private lateinit var mainPane: Pane
 

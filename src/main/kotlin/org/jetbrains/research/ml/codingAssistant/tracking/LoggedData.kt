@@ -35,9 +35,13 @@ object UiLoggedData : LoggedData<Unit, String>() {
     override val loggedDataGetters: List<LoggedDataGetter<Unit, String>> = arrayListOf(
         LoggedDataGetter(UiLoggedDataHeader.AGE.header) { SurveyUiData.age.uiValue.toString() },
         LoggedDataGetter(UiLoggedDataHeader.GENDER.header) { SurveyUiData.gender.toString() },
-        LoggedDataGetter(UiLoggedDataHeader.PROGRAM_EXPERIENCE_YEARS.header) { SurveyUiData.peYears.uiValue.toString() },
-        LoggedDataGetter(UiLoggedDataHeader.PROGRAM_EXPERIENCE_MONTHS.header) { SurveyUiData.peMonths.uiValue.toString() },
-        LoggedDataGetter(UiLoggedDataHeader.COUNTRY.header) {SurveyUiData.country.toString() },
+        LoggedDataGetter(UiLoggedDataHeader.PROGRAM_EXPERIENCE_YEARS.header) {
+            SurveyUiData.peYears.uiValue.toString()
+        },
+        LoggedDataGetter(UiLoggedDataHeader.PROGRAM_EXPERIENCE_MONTHS.header) {
+            SurveyUiData.peMonths.uiValue.toString()
+        },
+        LoggedDataGetter(UiLoggedDataHeader.COUNTRY.header) { SurveyUiData.country.toString() },
         LoggedDataGetter(UiLoggedDataHeader.CHOSEN_TASK.header) { TaskChoosingUiData.chosenTask.toString() },
         LoggedDataGetter(UiLoggedDataHeader.PROGRAMMING_LANGUAGE.header) { SurveyUiData.programmingLanguage.toString() }
     )

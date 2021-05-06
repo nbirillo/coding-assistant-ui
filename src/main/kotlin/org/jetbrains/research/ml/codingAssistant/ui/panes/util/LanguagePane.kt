@@ -13,7 +13,6 @@ import java.net.URL
 import java.util.*
 import java.util.function.Consumer
 
-
 /**
  * For panes with language combo box
  */
@@ -51,7 +50,8 @@ open class LanguagePaneController(project: Project, scale: Double, fxPanel: JFXP
     }
 
     override fun update() {
-        logger.info("${Plugin.PLUGIN_NAME} update controller ${this::javaClass.name}, current thread is ${Thread.currentThread().name}")
+        logger.info("${Plugin.PLUGIN_NAME} update controller ${this::javaClass.name}, " +
+                "current thread is ${Thread.currentThread().name}")
         paneUiData.updateUiData()
     }
 

@@ -49,7 +49,6 @@ class ErrorInformation(
     fun getErrorInformation(errorInformationType: ErrorInformationType): String? {
         return errorInformation[errorInformationType]
     }
-
 }
 
 enum class UserInformationType(val readableValue: String) {

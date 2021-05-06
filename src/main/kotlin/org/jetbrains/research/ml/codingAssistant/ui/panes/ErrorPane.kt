@@ -14,7 +14,6 @@ import java.net.URL
 import java.util.*
 import kotlin.reflect.KClass
 
-
 object ErrorControllerManager : PaneControllerManager<ErrorController>() {
     override val canCreateContent: Boolean = true
     override val paneControllerClass: KClass<ErrorController> = ErrorController::class
@@ -25,7 +24,12 @@ object ErrorControllerManager : PaneControllerManager<ErrorController>() {
     }
 }
 
-class ErrorController(project: Project, scale: Double, fxPanel: JFXPanel, id: Int) : PaneController(project, scale, fxPanel, id) {
+class ErrorController(
+    project: Project,
+    scale: Double,
+    fxPanel: JFXPanel,
+    id: Int
+) : PaneController(project, scale, fxPanel, id) {
     @FXML private lateinit var refreshButton: Button
     @FXML private lateinit var mainPane: Pane
 
@@ -34,7 +38,6 @@ class ErrorController(project: Project, scale: Double, fxPanel: JFXPanel, id: In
     @FXML private lateinit var yellowPolygon: Polygon
 
     var refreshAction: (Project) -> Unit = { }
-
 
     override fun initialize(url: URL?, resource: ResourceBundle?) {
         mainPane.styleProperty().bind(Bindings.concat("-fx-font-size: ${scale}px;"))

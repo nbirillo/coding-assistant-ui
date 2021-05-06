@@ -16,7 +16,6 @@ import java.awt.Toolkit
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-
 typealias Pane = PaneControllerManager<out PaneController>
 
 internal object MainController {
@@ -76,9 +75,11 @@ internal object MainController {
     }
 
     private fun updateVisiblePane(connection: ServerConnectionResult) {
-        logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection, current thread is ${Thread.currentThread().name}")
+        logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic " +
+                "$connection, current thread is ${Thread.currentThread().name}")
         ApplicationManager.getApplication().invokeLater {
-            logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection in application block, current thread is ${Thread.currentThread().name}")
+            logger.info("${Plugin.PLUGIN_NAME} MainController, server connection topic $connection " +
+                    "in application block, current thread is ${Thread.currentThread().name}")
             visiblePane = when (connection) {
                 ServerConnectionResult.UNINITIALIZED -> LoadingControllerManager
                 ServerConnectionResult.LOADING -> LoadingControllerManager
@@ -96,7 +97,8 @@ internal object MainController {
 
     /*   RUN ON EDT (ToolWindowFactory takes care of it) */
     fun createContent(project: Project): JComponent {
-        logger.info("${Plugin.PLUGIN_NAME} MainController create content, current thread is ${Thread.currentThread().name}")
+        logger.info("${Plugin.PLUGIN_NAME} MainController create content, " +
+                "current thread is ${Thread.currentThread().name}")
         val screenSize = Toolkit.getDefaultToolkit().screenSize
         val scale = screenSize.height / SCREEN_HEIGHT
         val panel = JPanel()
@@ -112,7 +114,12 @@ internal object MainController {
      * Represents ui content that needs to be created. It contains [panel] to which all [panesToCreateContent] should
      * add their contents.
      */
-    data class Content(val panel: JPanel, val project: Project, val scale: Double, var panesToCreateContent: List<Pane>) {
+    data class Content(
+        val panel: JPanel,
+        val project: Project,
+        val scale: Double,
+        var panesToCreateContent: List<Pane>
+    ) {
         init {
             logger.info("${Plugin.PLUGIN_NAME} Content init, current thread is ${Thread.currentThread().name}")
             updatePanesToCreate()
@@ -129,7 +136,8 @@ internal object MainController {
             if (canCreateContentPanes.isNotEmpty()) {
                 canCreateContentPanes.map { it.createContent(project, scale) }.forEach { panel.add(it) }
                 Platform.runLater {
-                    logger.info("${Plugin.PLUGIN_NAME} updatePanesToCreate in platform block, current thread is ${Thread.currentThread().name}")
+                    logger.info("${Plugin.PLUGIN_NAME} updatePanesToCreate in platform block, " +
+                            "current thread is ${Thread.currentThread().name}")
                     canCreateContentPanes.map { it.getLastAddedPaneController() }.forEach {
                         if (it is Updatable) {
                             it.update()

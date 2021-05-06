@@ -34,7 +34,6 @@ import org.jetbrains.research.ml.codingAssistant.ui.panes.TaskSolvingControllerM
 import java.io.File
 import java.io.IOException
 
-
 object TaskFileHandler {
     private val logger: Logger = Logger.getInstance(javaClass)
     private val documentToTask: HashMap<Document, Task> = HashMap()
@@ -79,7 +78,8 @@ object TaskFileHandler {
             logger.info("Project $project is already added or set to be added")
             return
         }
-        if (MainController.visiblePane != SurveyControllerManager && SurveyUiData.programmingLanguage.currentValue != null) {
+        if (MainController.visiblePane != SurveyControllerManager &&
+            SurveyUiData.programmingLanguage.currentValue != null) {
             initProject(project)
         } else {
             projectsToInit.add(project)
@@ -97,7 +97,6 @@ object TaskFileHandler {
             getContentEntry(virtualFile, rootModel)?.addSourceFolder(it.url, false)
             rootModel.commit()
         }
-
     }
 
     private fun getContentEntry(url: VirtualFile?, rootModel: ModifiableRootModel): ContentEntry? {
@@ -203,9 +202,11 @@ object TaskFileHandler {
 
     fun getDocument(project: Project, task: Task): Document {
         val virtualFile = projectToTaskToFiles[project]?.get(task)
-            ?: throw IllegalStateException("A file for the task ${task.key} in the project ${project.name} does not exist")
+            ?: throw IllegalStateException("A file for the task ${task.key} in " +
+                    "the project ${project.name} does not exist")
         return FileDocumentManager.getInstance().getDocument(virtualFile)
-            ?: throw IllegalStateException("A document for the file ${virtualFile.name} in the project ${project.name} does not exist")
+            ?: throw IllegalStateException("A document for the file ${virtualFile.name} in " +
+                    "the project ${project.name} does not exist")
     }
 
     fun closeTaskFiles(task: Task, language: Language = Language.PYTHON) {
@@ -229,7 +230,6 @@ object TaskFileHandler {
         return (this == null || (this == TaskChoosingUiData.chosenTask.currentValue &&
                 MainController.visiblePane == TaskSolvingControllerManager))
     }
-
 
     private fun setReadOnly(vFile: VirtualFile, readOnlyStatus: Boolean) {
         try {

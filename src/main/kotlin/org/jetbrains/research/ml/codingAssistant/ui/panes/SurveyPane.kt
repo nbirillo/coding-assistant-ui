@@ -24,15 +24,12 @@ import org.jetbrains.research.ml.codingAssistant.ui.panes.util.*
 import java.net.URL
 import java.util.*
 import java.util.function.Consumer
-import kotlin.Comparator
 import kotlin.reflect.KClass
-
 
 object SurveyControllerManager : ServerDependentPane<SurveyController>() {
     override val paneControllerClass: KClass<SurveyController> = SurveyController::class
     override val fxmlFilename: String = "survey-ui-form.fxml"
 }
-
 
 // Maybe its possible to make bounded properties instead?
 interface AgeNotifier : Consumer<Int> {
@@ -73,7 +70,10 @@ interface CountryComparatorNotifier : Consumer<Comparator<Country>> {
 
 interface ProgrammingLanguageNotifier : Consumer<Int> {
     companion object {
-        val PROGRAMMING_LANGUAGE_TOPIC = Topic.create("programming language change", ProgrammingLanguageNotifier::class.java)
+        val PROGRAMMING_LANGUAGE_TOPIC = Topic.create(
+            "programming language change",
+            ProgrammingLanguageNotifier::class.java
+        )
     }
 }
 
@@ -113,7 +113,11 @@ object SurveyUiData : LanguagePaneUiData() {
         programmingLanguages,
         -1,
         ProgrammingLanguageNotifier.PROGRAMMING_LANGUAGE_TOPIC,
-        initValue = StoredInfoHandler.getIndexByStoredKey(UiLoggedDataHeader.PROGRAMMING_LANGUAGE, programmingLanguages, -1)
+        initValue = StoredInfoHandler.getIndexByStoredKey(
+            UiLoggedDataHeader.PROGRAMMING_LANGUAGE,
+            programmingLanguages,
+            -1
+        )
     )
 
     override fun getData() = listOf(
@@ -340,7 +344,8 @@ class SurveyController(project: Project, scale: Double, fxPanel: JFXPanel, id: I
     }
 
     private fun initProgrammingLanguage() {
-        programmingLanguageComboBox.items = FXCollections.observableList(paneUiData.programmingLanguage.dataList.map { it.key })
+        programmingLanguageComboBox.items =
+            FXCollections.observableList(paneUiData.programmingLanguage.dataList.map { it.key })
 
         programmingLanguageComboBox.selectionModel.selectedItemProperty().addListener { _ ->
             paneUiData.programmingLanguage.uiValue = programmingLanguageComboBox.selectionModel.selectedIndex

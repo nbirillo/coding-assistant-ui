@@ -20,7 +20,8 @@ abstract class QueryExecutor {
     protected val logger: Logger = Logger.getInstance(javaClass)
 
     private val client: OkHttpClient by lazy {
-        logger.info("${Plugin.PLUGIN_NAME}: init the server. API base url is ${baseUrl}. Max count attempt of server = ${MAX_COUNT_ATTEMPTS}\"")
+        logger.info("${Plugin.PLUGIN_NAME}: init the server. API base url is $baseUrl. " +
+                "Max count attempt of server = ${MAX_COUNT_ATTEMPTS}\"")
         OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
@@ -39,17 +40,19 @@ abstract class QueryExecutor {
             val error = "The query ${request.method} ${request.url} was failed"
             try {
                 curCountAttempts++
-                logger.info("${Plugin.PLUGIN_NAME}: An attempt $curCountAttempts of execute the query ${request.method} ${request.url} has been started")
+                logger.info("${Plugin.PLUGIN_NAME}: An attempt $curCountAttempts of execute the query " +
+                        "${request.method} ${request.url} has been started")
                 val response = client.newCall(request).execute()
                 logger.info("${Plugin.PLUGIN_NAME}: HTTP status code is ${response.code}")
 
                 if (response.isSuccessful) {
-                    logger.info("${Plugin.PLUGIN_NAME}: The query ${request.method} ${request.url} was successfully received")
+                    logger.info("${Plugin.PLUGIN_NAME}: The query ${request.method} ${request.url} " +
+                            "was successfully received")
                     return response
                 }
                 response.close()
             } catch (e: Exception) {
-                logger.info("${Plugin.PLUGIN_NAME}: ${error}: internet connection exception")
+                logger.info("${Plugin.PLUGIN_NAME}: $error: internet connection exception")
             }
             logger.info("${Plugin.PLUGIN_NAME}: $error")
             return null
@@ -62,7 +65,7 @@ abstract class QueryExecutor {
         return response
     }
 
-    protected fun Response?.isSuccessful() : Boolean {
+    protected fun Response?.isSuccessful(): Boolean {
         return this?.isSuccessful == true
     }
 }

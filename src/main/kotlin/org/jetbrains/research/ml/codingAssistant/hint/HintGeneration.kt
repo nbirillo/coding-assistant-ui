@@ -12,7 +12,6 @@ import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import org.jetbrains.research.ml.codingAssistant.ui.panes.SurveyUiData
 import org.jetbrains.research.ml.codingAssistant.ui.window.showHintDiff
 
-
 object HintHandler {
     fun showHintDiff(task: Task, project: Project) {
         val studentPsiFile = TaskFileHandler.getPsiFile(project, task)
@@ -44,17 +43,22 @@ object HintHandler {
     }
 
     private fun showSolutionIsCorrect(project: Project) =
-        NOTIFICATION_GROUP.createNotification("Your code is correct. Try to submit your solution", NotificationType.INFORMATION)
+        NOTIFICATION_GROUP.createNotification(
+            "Your code is correct. Try to submit your solution",
+            NotificationType.INFORMATION
+        )
             .notify(project)
 
     private fun showHintNotAvailableNotification(project: Project) {
-        NOTIFICATION_GROUP.createNotification("Hint is not available for this code", NotificationType.ERROR)
+        NOTIFICATION_GROUP.createNotification(
+            "Hint is not available for this code",
+            NotificationType.ERROR
+        )
             .notify(project)
     }
 
     private val NOTIFICATION_GROUP =
         NotificationGroup("Custom Notification Group", NotificationDisplayType.BALLOON, true)
-
 }
 
 private fun SurveyUiData.createMetaInfoForTask(task: Task): MetaInfo {
@@ -71,7 +75,8 @@ private fun MetaInfo.ProgramExperience.Companion.createFromYearsAndMonths(
     months: Int
 ): MetaInfo.ProgramExperience {
     val totalMonth = months + years * 12
-    if (totalMonth < 0)
+    if (totalMonth < 0) {
         throw IllegalArgumentException()
+    }
     return createFromMonths(totalMonth)
 }

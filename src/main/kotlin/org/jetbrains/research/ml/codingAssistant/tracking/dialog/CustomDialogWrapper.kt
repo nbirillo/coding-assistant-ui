@@ -9,7 +9,6 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-
 abstract class CustomDialogWrapper : DialogWrapper(true) {
 
     protected val currentLanguage: PaneLanguage? by lazy {

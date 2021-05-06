@@ -8,13 +8,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task.Backgroundable
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.Topic
-import okhttp3.internal.wait
 import org.jetbrains.research.ml.codingAssistant.Plugin
 import org.jetbrains.research.ml.codingAssistant.models.*
 import org.jetbrains.research.ml.codingAssistant.tracking.DocumentLogger
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.locks.ReentrantLock
 import java.util.function.Consumer
 
 enum class ServerConnectionResult {
@@ -124,7 +122,8 @@ object PluginServer {
      */
     private fun safeReceive(receive: () -> Unit) {
         logger.info("${Plugin.PLUGIN_NAME} PluginServer safeReceive, current thread is ${Thread.currentThread().name}")
-        val publisher = ApplicationManager.getApplication().messageBus.syncPublisher(ServerConnectionNotifier.SERVER_CONNECTION_TOPIC)
+        val publisher = ApplicationManager.getApplication().messageBus
+            .syncPublisher(ServerConnectionNotifier.SERVER_CONNECTION_TOPIC)
         serverConnectionResult = ServerConnectionResult.LOADING
         publisher.accept(serverConnectionResult)
 
@@ -177,9 +176,11 @@ object PluginServer {
     }
 
     private fun receiveTaskSolvingErrorDialogText(): TaskSolvingErrorDialogText {
-        return CollectionsQueryExecutor.getItemFromCollection("dialog-text/task_solving_error", TaskSolvingErrorDialogText.serializer())
+        return CollectionsQueryExecutor.getItemFromCollection(
+            "dialog-text/task_solving_error",
+            TaskSolvingErrorDialogText.serializer()
+        )
     }
-
 
     fun sendDataForTask(task: Task, project: Project) {
         ApplicationManager.getApplication().invokeAndWait {
@@ -192,7 +193,6 @@ object PluginServer {
                 })
         }
     }
-
 
     private fun sendFileByDocument(document: Document) {
         if (dataSendingResult != DataSendingResult.LOADING) {

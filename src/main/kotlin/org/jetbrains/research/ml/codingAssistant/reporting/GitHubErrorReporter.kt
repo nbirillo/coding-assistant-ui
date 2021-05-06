@@ -65,7 +65,6 @@ class GitHubErrorReporter : ErrorReportSubmitter() {
                 NotificationListener.URL_OPENING_LISTENER
             ).setImportant(false).notify(project)
         }
-
     }
 
     private fun doSubmit(
@@ -74,7 +73,6 @@ class GitHubErrorReporter : ErrorReportSubmitter() {
         callback: Consumer<SubmittedReportInfo>,
         errorInformation: ErrorInformation
     ): Boolean {
-
         if (event is IdeaReportingEvent) {
             event.plugin?.let {
                 errorInformation.setUserInformation(UserInformationType.PLUGIN_NAME, it.name)

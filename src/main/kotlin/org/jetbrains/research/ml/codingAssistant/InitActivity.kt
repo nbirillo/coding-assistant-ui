@@ -5,8 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import org.jetbrains.research.ml.codingAssistant.server.PluginServer
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
-import java.util.concurrent.Executors
-
 
 class InitActivity : StartupActivity {
     private val logger: Logger = Logger.getInstance(javaClass)

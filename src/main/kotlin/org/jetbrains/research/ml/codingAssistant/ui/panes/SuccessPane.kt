@@ -20,7 +20,12 @@ object SuccessControllerManager : ServerDependentPane<SuccessController>() {
     override val fxmlFilename: String = "success-ui-form.fxml"
 }
 
-class SuccessController(project: Project, scale: Double, fxPanel: JFXPanel, id: Int) : LanguagePaneController(project, scale, fxPanel, id) {
+class SuccessController(
+    project: Project,
+    scale: Double,
+    fxPanel: JFXPanel,
+    id: Int
+) : LanguagePaneController(project, scale, fxPanel, id) {
     @FXML lateinit var backToTasksButton: Button
     @FXML lateinit var backToTasksText: Text
     @FXML lateinit var firstNonBoldText: Text
@@ -53,18 +58,16 @@ class SuccessController(project: Project, scale: Double, fxPanel: JFXPanel, id: 
                 setSuccessText()
             }
         })
-
     }
 
     private fun setSuccessText(default: String = "") {
         val language = LanguagePaneUiData.language.currentValue
         val currentTask = TaskChoosingUiData.chosenTask.currentValue
         val translatedTask = currentTask?.infoTranslation?.get(language)?.name ?: default
-        val successText =  translations?.get(language)?.successMessage ?: ""
+        val successText = translations?.get(language)?.successMessage ?: ""
         successText.split("%s").zip(nonBoldTexts).forEach { (s, t) -> t.text = s }
         firstBoldText.text = translatedTask
     }
-
 
     private fun initButtons() {
         backToTasksText.text = translations?.get(LanguagePaneUiData.language.currentValue)?.backToTasks
@@ -82,6 +85,5 @@ class SuccessController(project: Project, scale: Double, fxPanel: JFXPanel, id: 
                 }
             }
         })
-
     }
 }

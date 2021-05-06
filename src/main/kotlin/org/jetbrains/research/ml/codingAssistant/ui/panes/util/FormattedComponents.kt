@@ -1,10 +1,8 @@
 package org.jetbrains.research.ml.codingAssistant.ui.panes.util
 
-
 interface Formatter<T> {
     fun format(t: T): T
 }
-
 
 class LowerCaseFormatter : Formatter<String> {
     override fun format(t: String): String {
@@ -24,5 +22,4 @@ class CapitalCaseFormatter : Formatter<String> {
     override fun format(t: String): String {
         return t.capitalize()
     }
-
 }

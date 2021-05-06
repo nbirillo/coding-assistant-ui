@@ -10,7 +10,6 @@ import org.jetbrains.research.ml.codingAssistant.tracking.StoredInfoWrapper
 import java.io.File
 import java.net.URL
 
-
 object TrackerQueryExecutor : QueryExecutor() {
     private const val HINT_FILE_FIELD = "hintitem"
 

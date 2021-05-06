@@ -13,7 +13,7 @@ import java.util.function.Consumer
 import java.util.function.UnaryOperator
 
 fun TextField.addIntegerFormatter(filter: (String?) -> Boolean, defaultInt: Int = -1) {
-    val textFieldFilter: UnaryOperator<TextFormatter.Change?> = UnaryOperator label@ { change: TextFormatter.Change? ->
+    val textFieldFilter: UnaryOperator<TextFormatter.Change?> = UnaryOperator label@{ change: TextFormatter.Change? ->
         val text: String? = change?.controlNewText
         if (text?.toIntOrNull() == defaultInt) {
             /**
@@ -31,16 +31,13 @@ fun TextField.addIntegerFormatter(filter: (String?) -> Boolean, defaultInt: Int 
     this.textFormatter = TextFormatter<String>(textFieldFilter)
 }
 
-
-fun regexFilter(regexPattern: String) : (String?) -> Boolean {
-    return  { text: String? -> text != null && (text.isEmpty() || text.matches(Regex(regexPattern))) }
+fun regexFilter(regexPattern: String): (String?) -> Boolean {
+    return { text: String? -> text != null && (text.isEmpty() || text.matches(Regex(regexPattern))) }
 }
 
 fun <T : Any, C : Consumer<T>> subscribe(topic: Topic<C>, notifier: C) {
     ApplicationManager.getApplication().messageBus.connect().subscribe(topic, notifier)
 }
-
-
 
 fun Button.onMouseClicked(action: () -> Unit) {
     this.addEventHandler(MouseEvent.MOUSE_CLICKED) {
@@ -52,14 +49,11 @@ fun changeVisiblePane(newVisiblePane: PaneControllerManager<out PaneController>)
     MainController.visiblePane = newVisiblePane
 }
 
-
 /**
  * Changes combobox items, considering the previously selected item
  */
-fun <T>changeComboBoxItems(comboBox: ComboBox<T>, observableItems: ObservableList<T>, newItems: List<T>) {
+fun <T> changeComboBoxItems(comboBox: ComboBox<T>, observableItems: ObservableList<T>, newItems: List<T>) {
     val selectedIndex = comboBox.selectionModel.selectedIndex
     observableItems.setAll(newItems)
     comboBox.selectionModel.select(selectedIndex)
 }
-
-

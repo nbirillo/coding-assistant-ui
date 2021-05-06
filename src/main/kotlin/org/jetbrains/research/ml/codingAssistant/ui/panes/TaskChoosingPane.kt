@@ -15,14 +15,13 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Polygon
 import javafx.scene.text.Text
 import org.jetbrains.research.ml.codingAssistant.Plugin
-import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import org.jetbrains.research.ml.codingAssistant.server.PluginServer
+import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import org.jetbrains.research.ml.codingAssistant.ui.panes.util.*
 import java.net.URL
 import java.util.*
 import java.util.function.Consumer
 import kotlin.reflect.KClass
-
 
 object TaskChoosingControllerManager : ServerDependentPane<TaskChoosingController>() {
     override val paneControllerClass: KClass<TaskChoosingController> = TaskChoosingController::class
@@ -39,7 +38,6 @@ object TaskChoosingUiData : LanguagePaneUiData() {
     val chosenTask = ListedUiField(PluginServer.tasks, -1, ChosenTaskNotifier.CHOSEN_TASK_TOPIC)
     override fun getData(): List<UiField<*>> = listOf(chosenTask, language)
 }
-
 
 class TaskChoosingController(project: Project, scale: Double, fxPanel: JFXPanel, id: Int) :
     LanguagePaneController(project, scale, fxPanel, id) {

@@ -27,7 +27,7 @@ class TaskDocumentListener : DocumentListener {
      *  to add listeners anymore (see https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000664264-IntelliJ-DocumentListener-gives-an-internally-inconsistent-event-stream)
      */
     private fun isValidChange(event: DocumentEvent): Boolean {
-        return EditorFactory.getInstance().getEditors(event.document).isNotEmpty()
-                && FileDocumentManager.getInstance().getFile(event.document) != null
+        return EditorFactory.getInstance().getEditors(event.document).isNotEmpty() &&
+                FileDocumentManager.getInstance().getFile(event.document) != null
     }
 }

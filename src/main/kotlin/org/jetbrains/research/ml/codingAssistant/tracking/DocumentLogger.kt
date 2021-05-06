@@ -41,7 +41,7 @@ class DocumentLogPrinter {
     /**
      * Gets the active logPrinter or creates a new one if there was none or the active one was full
      */
-    fun getActiveLogPrinter(document: Document) : LogPrinter {
+    fun getActiveLogPrinter(document: Document): LogPrinter {
         val activePrinter = getLastPrinter(document)
         return if (activePrinter.isFull()) {
             addLogPrinter(document)
@@ -50,7 +50,7 @@ class DocumentLogPrinter {
         }
     }
 
-    private fun getLastPrinter(document: Document) : LogPrinter {
+    private fun getLastPrinter(document: Document): LogPrinter {
         return if (logPrinters.size == 0) {
             addLogPrinter(document)
         } else {
@@ -58,7 +58,7 @@ class DocumentLogPrinter {
         }
     }
 
-    private fun addLogPrinter(document: Document) : LogPrinter {
+    private fun addLogPrinter(document: Document): LogPrinter {
         logger.info("${Plugin.PLUGIN_NAME}: init printer")
         val logFile = createLogFile(document)
         val fileWriter = OutputStreamWriter(FileOutputStream(logFile), StandardCharsets.UTF_8)
@@ -68,12 +68,15 @@ class DocumentLogPrinter {
         return logPrinters.last()
     }
 
-    private fun createLogFile(document: Document) : File {
+    private fun createLogFile(document: Document): File {
         File(codingAssistantFolderPath).mkdirs()
         val trackedFile = FileDocumentManager.getInstance().getFile(document)
         logger.info("${Plugin.PLUGIN_NAME}: create log file for tracked file ${trackedFile?.name}")
         val logFilesNumber = logPrinters.size
-        val logFile = File("$codingAssistantFolderPath/${trackedFile?.nameWithoutExtension}_${trackedFile.hashCode()}_${document.hashCode()}_$logFilesNumber.csv")
+        val logFile = File(
+            "$codingAssistantFolderPath/${trackedFile?.nameWithoutExtension}_${trackedFile.hashCode()}_" +
+                    "${document.hashCode()}_$logFilesNumber.csv"
+        )
         FileUtil.createIfDoesntExist(logFile)
         return logFile
     }
@@ -91,7 +94,7 @@ class DocumentLogPrinter {
     /**
      * We need to flush printers before getting their log files.
      */
-    fun getLogFiles() : List<File> {
+    fun getLogFiles(): List<File> {
         return logPrinters.map {
             it.csvPrinter.flush()
             it.logFile

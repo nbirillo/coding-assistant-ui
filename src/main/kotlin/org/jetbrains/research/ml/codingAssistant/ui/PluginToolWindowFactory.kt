@@ -8,7 +8,6 @@ import org.jetbrains.research.ml.codingAssistant.Plugin
 import java.awt.*
 import javax.swing.*
 
-
 class PluginToolWindowFactory : ToolWindowFactory {
 
     private val logger: Logger = Logger.getInstance(javaClass)
@@ -21,14 +20,13 @@ class PluginToolWindowFactory : ToolWindowFactory {
         logger.info("${Plugin.PLUGIN_NAME}: creating tool window")
         val content = if (Plugin.checkRequiredPlugins()) {
             MainController.createContent(project)
-        } else  {
+        } else {
             createContentToRestart(project)
         }
         toolWindow.component.parent.add(content)
     }
 
-
-    private fun createContentToRestart(project: Project) : JComponent {
+    private fun createContentToRestart(project: Project): JComponent {
         val panel = JPanel(GridBagLayout())
         val gbc = GridBagConstraints()
         gbc.gridwidth = GridBagConstraints.REMAINDER
@@ -42,9 +40,3 @@ class PluginToolWindowFactory : ToolWindowFactory {
         return panel
     }
 }
-
-
-
-
-
-

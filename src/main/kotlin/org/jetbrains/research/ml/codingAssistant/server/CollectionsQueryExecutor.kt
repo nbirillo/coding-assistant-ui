@@ -23,13 +23,13 @@ object CollectionsQueryExecutor : QueryExecutor() {
         transform: (KSerializer<T>) -> KSerializer<R>
     ): R {
         if (response.isSuccessful()) {
-            return Json { allowStructuredMapKeys = true }.decodeFromString(transform(serializer), response?.body?.string() ?: "")
+            return Json { allowStructuredMapKeys = true }
+                .decodeFromString(transform(serializer), response?.body?.string() ?: "")
         }
         throw IllegalStateException("Unsuccessful server response")
     }
 
     private fun getResponse(url: String): Response? {
-        return executeQuery(Request.Builder().url(URL("${baseUrl}${url}")).build())
+        return executeQuery(Request.Builder().url(URL("${baseUrl}$url")).build())
     }
-
 }

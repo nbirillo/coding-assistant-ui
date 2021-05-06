@@ -6,12 +6,11 @@ import org.jetbrains.research.ml.codingAssistant.models.Keyed
 import java.util.function.Consumer
 import kotlin.properties.Delegates
 
-
 /**
  * Represents pane data with [uiValue], that triggers notifier when it changes.
  * When it's required, user has to change it to be differ from [defaultValue], for example fill out age field in ProfilePane
  */
-open class UiField <T> (val defaultValue: T, private val notifierTopic: Topic<out Consumer<T>>,
+open class UiField<T> (val defaultValue: T, private val notifierTopic: Topic<out Consumer<T>>,
                         initValue: T = defaultValue,
                         var isRequired: Boolean = true) {
     /**
@@ -36,7 +35,6 @@ open class UiField <T> (val defaultValue: T, private val notifierTopic: Topic<ou
     fun updateUiValue() {
         changeUiValue(uiValue)
     }
-
 }
 
 /**
@@ -80,7 +78,7 @@ open class ListedUiField<T : Keyed>(
         }
     }
 
-    fun isValid(uiValue: Int) : Boolean {
+    fun isValid(uiValue: Int): Boolean {
         return uiValue in dataList.indices
     }
 
@@ -107,7 +105,7 @@ abstract class PaneUiData {
     /**
      * Return if any data, that is required, is still default
      */
-    fun anyRequiredDataDefault() : Boolean {
+    fun anyRequiredDataDefault(): Boolean {
         return getData().any { it.isRequired && it.isUiValueDefault }
     }
 

@@ -25,7 +25,6 @@ class CancelRecoverHintManager(private val innerManager: HintManager) : HintMana
     }
 }
 
-
 private val MetaInfo.ProgramExperience.higherExperience: MetaInfo.ProgramExperience?
     get() = when (this) {
         LESS_THAN_HALF_YEAR -> FROM_HALF_TO_ONE_YEAR

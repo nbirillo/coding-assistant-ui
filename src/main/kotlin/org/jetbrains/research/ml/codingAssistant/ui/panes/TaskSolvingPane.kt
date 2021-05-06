@@ -25,7 +25,12 @@ object TaskSolvingControllerManager : ServerDependentPane<TaskSolvingController>
     override val fxmlFilename: String = "task-solving-ui-form.fxml"
 }
 
-class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, id: Int) : LanguagePaneController(project, scale, fxPanel, id) {
+class TaskSolvingController(
+    project: Project,
+    scale: Double,
+    fxPanel: JFXPanel,
+    id: Int
+) : LanguagePaneController(project, scale, fxPanel, id) {
     //    Task info
     @FXML lateinit var taskNameText: Text
     @FXML lateinit var taskDescriptionText: Text
@@ -107,7 +112,6 @@ class TaskSolvingController(project: Project, scale: Double, fxPanel: JFXPanel, 
                 }
             }
             changeVisiblePane(TaskChoosingControllerManager)
-
         }
         backToTasksButton.onMouseClicked { changeVisiblePane(TaskChoosingControllerManager) }
         hintButton.onMouseClicked {

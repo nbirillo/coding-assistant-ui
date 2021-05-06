@@ -47,8 +47,8 @@ data class RequiredPlugin(val name: String, val id: String, val zipFile: Resourc
      * Perhaps there is a better way of doing this
      */
     fun isInstalled(): Boolean {
-        val isAlreadyInstalled = File("${PathManager.getPluginsPath()}/${name}").exists()
-        logger.info("${Plugin.PLUGIN_NAME}: plugin ${name} is already installed: $isAlreadyInstalled")
+        val isAlreadyInstalled = File("${PathManager.getPluginsPath()}/$name").exists()
+        logger.info("${Plugin.PLUGIN_NAME}: plugin $name is already installed: $isAlreadyInstalled")
         return isAlreadyInstalled
     }
 
@@ -89,7 +89,7 @@ object Plugin {
     val testMode = TestMode.ON
 
     const val PLUGIN_NAME = "codingassistant"
-    val codingAssistantFolderPath = "${PathManager.getPluginsPath()}/${PLUGIN_NAME}"
+    val codingAssistantFolderPath = "${PathManager.getPluginsPath()}/$PLUGIN_NAME"
 
     private const val OLD_PLUGINS_FOLDER = "2020.2-"
     private const val NEW_PLUGINS_FOLDER = "2020.2+"
@@ -133,24 +133,15 @@ object Plugin {
         )
     }
 
-
     private fun getRequiredPlugins(): List<RequiredPlugin> {
         return ideVersion?.let {
 //          If IDE version is more than 2020.2, we need to use JavaFX runtime since we use JavaFX for UI
             if (ideVersion >= Version(2020, 2, 0)) {
-                arrayListOf(getActivityTrackerPlugin(NEW_PLUGINS_FOLDER), getJavaFxPlugin(NEW_PLUGINS_FOLDER))
+                arrayListOf(getJavaFxPlugin(NEW_PLUGINS_FOLDER))
             } else {
-                arrayListOf(getActivityTrackerPlugin(OLD_PLUGINS_FOLDER))
+                arrayListOf()
             }
         } ?: arrayListOf()
-    }
-
-    private fun getActivityTrackerPlugin(folder: String): RequiredPlugin {
-        return RequiredPlugin(
-            "activity-tracker-plugin",
-            "Activity Tracker",
-            ResourceFile("activity-tracker-plugin.zip", folder)
-        )
     }
 
     private fun getJavaFxPlugin(folder: String): RequiredPlugin {

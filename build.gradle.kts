@@ -77,7 +77,6 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
-
 tasks {
     withType<JavaCompile> {
         sourceCompatibility = "1.8"
