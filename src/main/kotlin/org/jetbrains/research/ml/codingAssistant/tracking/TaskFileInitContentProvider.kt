@@ -1,11 +1,12 @@
 package org.jetbrains.research.ml.codingAssistant.tracking
 
+import org.jetbrains.research.ml.codingAssistant.Plugin.PLUGIN_NAME
 import org.jetbrains.research.ml.codingAssistant.Plugin.codingAssistantFolderPath
 import org.jetbrains.research.ml.codingAssistant.models.Language
 import org.jetbrains.research.ml.codingAssistant.models.Task
 
 object TaskFileInitContentProvider {
-    private val PLUGIN_FOLDER = codingAssistantFolderPath
+    private const val PLUGIN_FOLDER = PLUGIN_NAME
 
     fun getLanguageFolderRelativePath(language: Language): String {
         return "$PLUGIN_FOLDER/${language.name.toLowerCase()}"

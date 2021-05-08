@@ -10,7 +10,6 @@ import org.jetbrains.research.ml.coding.assistant.dataset.model.DatasetTask
 import org.jetbrains.research.ml.coding.assistant.dataset.model.MetaInfo
 import org.jetbrains.research.ml.codingAssistant.Plugin
 import org.jetbrains.research.ml.codingAssistant.models.Task
-import org.jetbrains.research.ml.codingAssistant.tracking.DocumentLogPrinter
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import org.jetbrains.research.ml.codingAssistant.ui.panes.SurveyUiData
 import org.jetbrains.research.ml.codingAssistant.ui.window.showHintDiff
