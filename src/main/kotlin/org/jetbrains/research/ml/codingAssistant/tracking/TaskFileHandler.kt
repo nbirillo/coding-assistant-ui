@@ -41,10 +41,6 @@ object TaskFileHandler {
     private val projectToTempFile: HashMap<Project, VirtualFile> = HashMap()
     private val projectsToInit = arrayListOf<Project>()
 
-    private val listener by lazy {
-        TaskDocumentListener()
-    }
-
     fun initProjects() {
         projectsToInit.forEach { initProject(it) }
     }

@@ -67,7 +67,7 @@ object PluginServer {
 
     fun checkItInitialized(project: Project, completion: () -> Unit = {}) {
         if (serverConnectionResult == ServerConnectionResult.UNINITIALIZED) {
-            reconnect(project, completion)
+            syncReconnect(project, completion)
         }
     }
 

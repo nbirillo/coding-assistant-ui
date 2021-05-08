@@ -59,3 +59,35 @@ object DocumentLoggedData : LoggedData<Document, String?>() {
         LoggedDataGetter("testMode") { Plugin.testMode.toString() }
     )
 }
+
+class HintLoggedData(
+    private val hint: String?,
+    private val hintStatus: HintStatus?,
+    private val beforeHintUserCore: String?,
+    private val afterHintUserCode: String?,
+) : LoggedData<Unit, String>() {
+    constructor() : this(null, null, null, null)
+
+    enum class HintStatus(val key: String) {
+        REJECTED("rejected"),
+        ACCEPTED("accepted"),
+        NOT_FOUND("not_found"),
+        ON_CORRECT("on_correct")
+    }
+
+    override val loggedDataGetters: List<LoggedDataGetter<Unit, String>> = arrayListOf(
+        LoggedDataGetter("hint") { hint ?: "" },
+        LoggedDataGetter("hintStatus") { hintStatus?.key ?: "" },
+        LoggedDataGetter("beforeHintCode") { beforeHintUserCore ?: "" },
+        LoggedDataGetter("afterHintCode") { afterHintUserCode ?: "" },
+    )
+
+    companion object {
+        val headers = listOf(
+            "finalHint",
+            "hintStatus",
+            "beforeHintCode",
+            "afterHintCode"
+        )
+    }
+}

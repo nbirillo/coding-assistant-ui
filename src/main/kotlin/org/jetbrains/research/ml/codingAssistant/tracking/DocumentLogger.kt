@@ -63,7 +63,7 @@ class DocumentLogPrinter {
         val logFile = createLogFile(document)
         val fileWriter = OutputStreamWriter(FileOutputStream(logFile), StandardCharsets.UTF_8)
         val csvPrinter = CSVPrinter(fileWriter, CSVFormat.DEFAULT)
-        csvPrinter.printRecord(DocumentLoggedData.headers + UiLoggedData.headers)
+        csvPrinter.printRecord(DocumentLoggedData.headers + HintLoggedData.headers + UiLoggedData.headers)
         logPrinters.add(LogPrinter(csvPrinter, fileWriter, logFile))
         return logPrinters.last()
     }
@@ -107,10 +107,34 @@ object DocumentLogger {
 
     // Call it after GetHint button pressing
     fun log(document: Document) {
-        val docPrinter = myDocumentsToPrinters.getOrPut(document, { DocumentLogPrinter() })
+        val docPrinter = myDocumentsToPrinters.getOrPut(document) { DocumentLogPrinter() }
         val logPrinter = docPrinter.getActiveLogPrinter(document)
         // TODO: log a hint, accept/reject, the user code after applying/rejecting hint, the final solution
-        logPrinter.csvPrinter.printRecord(DocumentLoggedData.getData(document) + UiLoggedData.getData(Unit))
+        logPrinter.csvPrinter.printRecord(
+            DocumentLoggedData.getData(document) +
+                    HintLoggedData().getData(Unit) +
+                    UiLoggedData.getData(Unit)
+        )
+    }
+
+    fun logHintAction(
+        document: Document,
+        hint: String?,
+        hintStatus: HintLoggedData.HintStatus,
+        beforeHintUserCore: String,
+        afterHintUserCode: String?,
+    ) {
+        val docPrinter = myDocumentsToPrinters.getOrPut(document) { DocumentLogPrinter() }
+        val logPrinter = docPrinter.getActiveLogPrinter(document)
+        val hintLoggedData = HintLoggedData(hint, hintStatus, beforeHintUserCore, afterHintUserCode)
+        logPrinter.csvPrinter.printRecord(
+            DocumentLoggedData.getData(document) +
+                    hintLoggedData.getData(Unit) +
+                    UiLoggedData.getData(Unit)
+        )
+        logPrinter.csvPrinter.printRecord(
+            DocumentLoggedData.getData(document) + UiLoggedData.getData(Unit)
+        )
     }
 
     fun getDocumentLogPrinter(document: Document): DocumentLogPrinter? {

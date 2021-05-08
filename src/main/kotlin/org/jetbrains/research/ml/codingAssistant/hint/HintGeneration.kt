@@ -4,54 +4,94 @@ import com.intellij.diff.DiffManager
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import org.jetbrains.research.ml.coding.assistant.dataset.model.DatasetTask
 import org.jetbrains.research.ml.coding.assistant.dataset.model.MetaInfo
-import org.jetbrains.research.ml.codingAssistant.Plugin
 import org.jetbrains.research.ml.codingAssistant.models.Task
+import org.jetbrains.research.ml.codingAssistant.tracking.DocumentLogger
+import org.jetbrains.research.ml.codingAssistant.tracking.HintLoggedData
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
 import org.jetbrains.research.ml.codingAssistant.ui.panes.SurveyUiData
 import org.jetbrains.research.ml.codingAssistant.ui.window.showHintDiff
 
 object HintHandler {
-    private val logger: Logger = Logger.getInstance(javaClass)
-
     fun showHintDiff(task: Task, project: Project) {
         val studentPsiFile = TaskFileHandler.getPsiFile(project, task)
-        val studentCode = studentPsiFile.text
+        val beforeHintStudentCode = studentPsiFile.text
         val metaInfo = SurveyUiData.createMetaInfoForTask(task)
-        logger.info("${Plugin.PLUGIN_NAME}: Requested hint for code:\n$studentCode")
         TaskFileHandler.setTempFileContent(project, studentPsiFile.text)
         val tempPsiFile = TaskFileHandler.getTempPsiFile(project)
         TaskFileHandler.commitTempFile(project)
         val codeHint = CodingAssistantManager.getHintedFile(tempPsiFile, metaInfo)
         if (codeHint == null) {
-            logger.info("${Plugin.PLUGIN_NAME}: Cannot generate hint for code")
             showHintNotAvailableNotification(project)
+            logHintAction(
+                task,
+                project,
+                null,
+                HintLoggedData.HintStatus.NOT_FOUND,
+                beforeHintStudentCode,
+                null
+            )
             return
         }
-        val hintText = codeHint.psiFragment.text
-        if (hintText == studentCode && codeHint.vertexHint.hintVertex.isFinal) {
-            logger.info("${Plugin.PLUGIN_NAME}: Cannot generate hint for correct solution")
+        val afterHintStudentCode = codeHint.psiFragment.text
+        if (afterHintStudentCode == beforeHintStudentCode && codeHint.vertexHint.hintVertex.isFinal) {
+            logHintAction(
+                task,
+                project,
+                afterHintStudentCode,
+                HintLoggedData.HintStatus.ON_CORRECT,
+                beforeHintStudentCode,
+                afterHintStudentCode
+            )
             showSolutionIsCorrect(project)
             return
         }
         val diffManager = DiffManager.getInstance()
         diffManager.showHintDiff(
             project,
-            studentCode,
-            hintText,
+            beforeHintStudentCode,
+            afterHintStudentCode,
             onApplyHandler = {
-                logger.info("${Plugin.PLUGIN_NAME}: Generated hint is accepted by the student. New student's code:\n$hintText")
-                TaskFileHandler.setFileContent(project, task, hintText)
+                WriteCommandAction.runWriteCommandAction(project) {
+                    TaskFileHandler.setFileContent(project, task, afterHintStudentCode)
+                }
+                logHintAction(
+                    task,
+                    project,
+                    afterHintStudentCode,
+                    HintLoggedData.HintStatus.ACCEPTED,
+                    beforeHintStudentCode,
+                    afterHintStudentCode
+                )
                 true
             },
             onCloseHandler = {
-                logger.info("${Plugin.PLUGIN_NAME}: Generated hint is declined by the student. Old student's code:\n$studentCode")
+                logHintAction(
+                    task,
+                    project,
+                    afterHintStudentCode,
+                    HintLoggedData.HintStatus.REJECTED,
+                    beforeHintStudentCode,
+                    afterHintStudentCode
+                )
                 true
             }
         )
+    }
+
+    private fun logHintAction(
+        task: Task,
+        project: Project,
+        hint: String?,
+        hintStatus: HintLoggedData.HintStatus,
+        beforeHintUserCore: String,
+        afterHintUserCode: String?
+    ) {
+        val document = TaskFileHandler.getDocument(project, task)
+        DocumentLogger.logHintAction(document, hint, hintStatus, beforeHintUserCore, afterHintUserCode)
     }
 
     private fun showSolutionIsCorrect(project: Project) =
