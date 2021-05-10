@@ -1,7 +1,6 @@
 package org.jetbrains.research.ml.codingAssistant.tracking
 
 import org.jetbrains.research.ml.codingAssistant.Plugin.PLUGIN_NAME
-import org.jetbrains.research.ml.codingAssistant.Plugin.codingAssistantFolderPath
 import org.jetbrains.research.ml.codingAssistant.models.Language
 import org.jetbrains.research.ml.codingAssistant.models.Task
 
