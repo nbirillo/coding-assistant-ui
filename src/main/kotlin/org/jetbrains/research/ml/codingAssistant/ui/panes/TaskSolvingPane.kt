@@ -136,6 +136,7 @@ class TaskSolvingController(
                     outputLabel.text = it.outputData
                     sendSolutionText.text = it.submit
                     backToTasksText.text = it.backToTasks
+                    hintText.text = it.hint
                 }
 
                 val taskInfo = TaskChoosingUiData.chosenTask.currentValue?.infoTranslation?.get(newLanguage)
