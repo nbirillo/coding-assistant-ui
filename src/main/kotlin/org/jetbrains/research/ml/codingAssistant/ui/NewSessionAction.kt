@@ -21,6 +21,8 @@ class NewSessionAction : AnAction() {
         TaskFileHandler.deleteAllProjectFiles(e.project!!)
 
         println("new action")
+
+        TaskFileHandler.addProject(e.project!!)
     }
 
 }

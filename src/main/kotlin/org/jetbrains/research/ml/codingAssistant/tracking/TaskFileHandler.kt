@@ -254,6 +254,7 @@ object TaskFileHandler {
                 file.delete(this)
             }
         }
+        projectsToInit.remove(project)
         projectToTaskToFiles.remove(project)
     }
 }
