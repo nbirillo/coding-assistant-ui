@@ -52,7 +52,7 @@ object TaskFileInitContentProvider {
                     "    // Write your code here\n" +
                     "    return 0; \n" +
                     "}"
-            Language.PYTHON -> "$comment# Write your code here"
+            Language.PYTHON -> comment
         }
     }
 }
