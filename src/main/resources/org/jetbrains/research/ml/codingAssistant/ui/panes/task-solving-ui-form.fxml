@@ -81,7 +81,7 @@
          <graphic>
              <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
                    minWidth="-Infinity" prefHeight="${106.0 * scale}" prefWidth="${122.0 * scale}" styleClass="v-box">
-                 <ImageView fitHeight="${57.0 * scale}" fitWidth="${35.0 * scale}" pickOnBounds="true" preserveRatio="true">
+                 <ImageView fitHeight="${35.0 * scale}" fitWidth="${35.0 * scale}" pickOnBounds="true" preserveRatio="true">
                      <Image url="@hint.png"/>
                  </ImageView>
                  <Pane prefHeight="${15.0 * scale}" prefWidth="${84.0 * scale}"/>

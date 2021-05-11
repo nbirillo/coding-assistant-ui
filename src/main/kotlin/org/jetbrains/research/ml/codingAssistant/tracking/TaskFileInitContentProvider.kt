@@ -5,7 +5,7 @@ import org.jetbrains.research.ml.codingAssistant.models.Language
 import org.jetbrains.research.ml.codingAssistant.models.Task
 
 object TaskFileInitContentProvider {
-    private const val PLUGIN_FOLDER = PLUGIN_NAME
+    private const val PLUGIN_FOLDER = "coding-assistant"
 
     fun getLanguageFolderRelativePath(language: Language): String {
         return "$PLUGIN_FOLDER/${language.name.toLowerCase()}"
