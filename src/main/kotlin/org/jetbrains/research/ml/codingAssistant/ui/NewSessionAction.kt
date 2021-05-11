@@ -18,22 +18,19 @@ class NewSessionAction : AnAction() {
         /**
          * Todo:
          *  0. maybe send all data just in case?
-         *  1. + delete task files
-         *  2. setDefaultValues correctly (gender and chosen task)
+         *  1. setDefaultValues correctly (gender and chosen task)
+         *  2. clear csv file
          */
 
-//      Maybe we need to delete files for all open projects?
-        TaskFileHandler.deleteAllProjectFiles(e.project!!)
+        TaskFileHandler.clearAllFiles()
         PluginServer.tasks.forEach {
             ApplicationManager.getApplication().invokeLater {
                 TaskFileHandler.closeTaskFiles(it)
             }
         }
 
-        StoredInfoWrapper.clearStoredInfo()
+        StoredInfoWrapper.updateStoredInfo(surveyInfo = mapOf())
         TrackerQueryExecutor.initUserId()
-
-        TaskFileHandler.addProject(e.project!!)
 
         SurveyUiData.setDefaultValues()
         TaskChoosingUiData.setDefaultValues()

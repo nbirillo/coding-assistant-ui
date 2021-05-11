@@ -23,6 +23,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.io.ReadOnlyAttributeUtil
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.research.ml.codingAssistant.Plugin
+import org.jetbrains.research.ml.codingAssistant.models.Extension
 import org.jetbrains.research.ml.codingAssistant.models.Language
 import org.jetbrains.research.ml.codingAssistant.models.Task
 import org.jetbrains.research.ml.codingAssistant.server.PluginServer
@@ -74,7 +75,8 @@ object TaskFileHandler {
             return
         }
         if (MainController.visiblePane != SurveyControllerManager &&
-            SurveyUiData.programmingLanguage.currentValue != null) {
+            SurveyUiData.programmingLanguage.currentValue != null
+        ) {
             initProject(project)
         } else {
             projectsToInit.add(project)
@@ -197,11 +199,15 @@ object TaskFileHandler {
 
     fun getDocument(project: Project, task: Task): Document {
         val virtualFile = projectToTaskToFiles[project]?.get(task)
-            ?: throw IllegalStateException("A file for the task ${task.key} in " +
-                    "the project ${project.name} does not exist")
+            ?: throw IllegalStateException(
+                "A file for the task ${task.key} in " +
+                        "the project ${project.name} does not exist"
+            )
         return FileDocumentManager.getInstance().getDocument(virtualFile)
-            ?: throw IllegalStateException("A document for the file ${virtualFile.name} in " +
-                    "the project ${project.name} does not exist")
+            ?: throw IllegalStateException(
+                "A document for the file ${virtualFile.name} in " +
+                        "the project ${project.name} does not exist"
+            )
     }
 
     fun closeTaskFiles(task: Task, language: Language = Language.PYTHON) {
@@ -246,14 +252,22 @@ object TaskFileHandler {
         }
     }
 
-    fun deleteAllProjectFiles(project: Project) {
-        projectToTaskToFiles[project]?.entries?.forEach { (task, file) ->
-            logger.info("Deleting task files for task ${task.key}")
-            ApplicationManager.getApplication().runWriteAction {
-                file.delete(this)
+    fun clearAllFiles() {
+        projectToTaskToFiles.entries.forEach { (project, taskToFiles) ->
+            taskToFiles.entries.forEach { (task, file) ->
+                val stringExt = file.extension ?: error("Invalid extension")
+                val ext = Extension.values().find { it.ext == ".$stringExt" }
+                    ?: error("Did not find extension $stringExt")
+                val lang = Language.values().find { it.extension == ext }
+                    ?: error("Did not find language for extension $ext")
+                val content = TaskFileInitContentProvider.getInitFileContent(task, lang)
+                WriteCommandAction.runWriteCommandAction(project) {
+                    setReadOnly(file, false)
+                    setFileContent(project, task, content)
+                    setReadOnly(file, true)
+                }
             }
+            LocalFileSystem.getInstance().refreshFiles(taskToFiles.values)
         }
-        projectsToInit.remove(project)
-        projectToTaskToFiles.remove(project)
     }
 }
