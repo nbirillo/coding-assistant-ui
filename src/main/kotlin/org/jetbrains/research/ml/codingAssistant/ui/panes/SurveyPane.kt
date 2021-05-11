@@ -266,6 +266,8 @@ class SurveyController(project: Project, scale: Double, fxPanel: JFXPanel, id: I
                 if (paneUiData.gender.isValid(newGenderIndex)) {
                     genderGroup.selectToggle(genderRadioButtons[newGenderIndex])
                     startWorkingButton.isDisable = paneUiData.anyRequiredDataDefault()
+                } else {
+                    genderGroup.selectToggle(null)
                 }
             }
         })
