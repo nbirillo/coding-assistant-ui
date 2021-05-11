@@ -63,6 +63,10 @@ object StoredInfoWrapper {
         writeStoredInfo()
     }
 
+    fun clearStoredInfo() {
+        info = StoredInfo()
+    }
+
     private fun writeStoredInfo() {
         val file = File(storedInfoFilePath)
         val writer = PrintWriter(file)

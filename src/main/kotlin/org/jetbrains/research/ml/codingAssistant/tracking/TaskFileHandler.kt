@@ -1,6 +1,5 @@
 package org.jetbrains.research.ml.codingAssistant.tracking
 
-import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.command.WriteCommandAction

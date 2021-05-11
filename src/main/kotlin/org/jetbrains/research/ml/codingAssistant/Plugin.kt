@@ -88,7 +88,7 @@ object Plugin {
     private val logger: Logger = Logger.getInstance(javaClass)
     val testMode = TestMode.ON
 
-    const val PLUGIN_NAME = "codingassistant"
+    const val PLUGIN_NAME = "codingassistant-ui"
     val codingAssistantFolderPath = "${PathManager.getPluginsPath()}/$PLUGIN_NAME"
 
     private const val OLD_PLUGINS_FOLDER = "2020.2-"

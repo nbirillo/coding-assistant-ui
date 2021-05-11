@@ -18,16 +18,18 @@ object TrackerQueryExecutor : QueryExecutor() {
     init {
         StoredInfoWrapper.info.userId?.let { userId = it } ?: run {
             initUserId()
-            StoredInfoWrapper.updateStoredInfo(userId = userId)
         }
     }
 
-    private fun initUserId() {
+    fun initUserId(toUpdateStoredInfo: Boolean = true) {
         val currentUrl = URL("${baseUrl}user")
         logger.info("${Plugin.PLUGIN_NAME}: ...generating user id")
         val requestBody = ByteArray(0).toRequestBody(null, 0, 0)
         val request = Request.Builder().url(currentUrl).post(requestBody).build()
         userId = executeQuery(request)?.let { it.body?.string() }
+        if (toUpdateStoredInfo) {
+            StoredInfoWrapper.updateStoredInfo(userId = userId)
+        }
     }
 
     private fun getRequestForSendingHintDataQuery(

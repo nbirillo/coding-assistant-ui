@@ -2,7 +2,9 @@ package org.jetbrains.research.ml.codingAssistant.ui.panes.util
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.messages.Topic
+import javafx.application.Platform
 import org.jetbrains.research.ml.codingAssistant.models.Keyed
+import org.jetbrains.research.ml.codingAssistant.ui.panes.SurveyUiData
 import java.util.function.Consumer
 import kotlin.properties.Delegates
 
@@ -111,5 +113,13 @@ abstract class PaneUiData {
 
     fun updateUiData() {
         getData().forEach { it.updateUiValue() }
+    }
+
+    fun setDefaultValues() {
+        Platform.runLater {
+            SurveyUiData.getData().forEach {
+                it.uiValue = it.defaultValue
+            }
+        }
     }
 }
