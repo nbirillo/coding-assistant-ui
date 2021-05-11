@@ -261,13 +261,15 @@ object TaskFileHandler {
                 val lang = Language.values().find { it.extension == ext }
                     ?: error("Did not find language for extension $ext")
                 val content = TaskFileInitContentProvider.getInitFileContent(task, lang)
-                WriteCommandAction.runWriteCommandAction(project) {
+                ApplicationManager.getApplication().invokeAndWait {
                     setReadOnly(file, false)
-                    setFileContent(project, task, content)
-                    setReadOnly(file, true)
                 }
+                WriteCommandAction.runWriteCommandAction(project) {
+                    setFileContent(project, task, content)
+                }
+                LocalFileSystem.getInstance().refresh(false)
+                setReadOnly(file, true)
             }
-            LocalFileSystem.getInstance().refreshFiles(taskToFiles.values)
         }
     }
 }
