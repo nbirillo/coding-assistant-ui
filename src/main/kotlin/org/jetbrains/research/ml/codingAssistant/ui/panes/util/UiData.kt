@@ -37,6 +37,10 @@ open class UiField<T> (val defaultValue: T, private val notifierTopic: Topic<out
     fun updateUiValue() {
         changeUiValue(uiValue)
     }
+
+    fun setDefault() {
+        changeUiValue(defaultValue)
+    }
 }
 
 /**
@@ -117,9 +121,7 @@ abstract class PaneUiData {
 
     fun setDefaultValues() {
         Platform.runLater {
-            SurveyUiData.getData().forEach {
-                it.uiValue = it.defaultValue
-            }
+            getData().forEach { it.setDefault() }
         }
     }
 }
