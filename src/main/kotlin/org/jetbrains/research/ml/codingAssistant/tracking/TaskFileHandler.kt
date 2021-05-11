@@ -252,24 +252,15 @@ object TaskFileHandler {
         }
     }
 
-    fun clearAllFiles() {
-        projectToTaskToFiles.entries.forEach { (project, taskToFiles) ->
-            taskToFiles.entries.forEach { (task, file) ->
-                val stringExt = file.extension ?: error("Invalid extension")
-                val ext = Extension.values().find { it.ext == ".$stringExt" }
-                    ?: error("Did not find extension $stringExt")
-                val lang = Language.values().find { it.extension == ext }
-                    ?: error("Did not find language for extension $ext")
-                val content = TaskFileInitContentProvider.getInitFileContent(task, lang)
-                ApplicationManager.getApplication().invokeAndWait {
-                    setReadOnly(file, false)
-                }
-                WriteCommandAction.runWriteCommandAction(project) {
-                    setFileContent(project, task, content)
-                }
-                LocalFileSystem.getInstance().refresh(false)
-                setReadOnly(file, true)
+    fun deleteAllProjectFiles(project: Project) {
+        projectToTaskToFiles[project]?.values?.forEach { file ->
+            WriteCommandAction.runWriteCommandAction(project) {
+                file.delete(this)
             }
         }
+        LocalFileSystem.getInstance().refresh(false)
+        projectToTaskToFiles.clear()
+        projectToTempFile.clear()
+        projectsToInit.clear()
     }
 }

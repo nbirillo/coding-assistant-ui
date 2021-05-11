@@ -18,22 +18,16 @@ class NewSessionAction : AnAction() {
         /**
          * Todo:
          *  0. maybe send all data just in case?
-         *  1. setDefaultValues correctly (gender and chosen task)
-         *  2. clear csv file
+         *  1. clear csv file
          */
 
-        TaskFileHandler.clearAllFiles()
-        PluginServer.tasks.forEach {
-            ApplicationManager.getApplication().invokeLater {
-                TaskFileHandler.closeTaskFiles(it)
-            }
-        }
-
+        TaskFileHandler.deleteAllProjectFiles(e.project!!)
         StoredInfoWrapper.updateStoredInfo(surveyInfo = mapOf())
         TrackerQueryExecutor.initUserId()
 
         SurveyUiData.setDefaultValues()
         TaskChoosingUiData.setDefaultValues()
         changeVisiblePane(SurveyControllerManager)
+        TaskFileHandler.addProject(e.project!!)
     }
 }
