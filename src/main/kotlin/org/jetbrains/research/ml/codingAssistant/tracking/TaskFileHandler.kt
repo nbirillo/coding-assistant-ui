@@ -1,5 +1,6 @@
 package org.jetbrains.research.ml.codingAssistant.tracking
 
+import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -36,7 +37,6 @@ import java.io.IOException
 
 object TaskFileHandler {
     private val logger: Logger = Logger.getInstance(javaClass)
-    private val documentToTask: HashMap<Document, Task> = HashMap()
     private val projectToTaskToFiles: HashMap<Project, HashMap<Task, VirtualFile>> = HashMap()
     private val projectToTempFile: HashMap<Project, VirtualFile> = HashMap()
     private val projectsToInit = arrayListOf<Project>()
@@ -149,7 +149,7 @@ object TaskFileHandler {
     }
 
     /**
-     *  If [documentToTask] doesn't have this [task] then we didn't track the document. Once document is added,
+     *  If [projectToTaskToFiles] doesn't have this [task] then we didn't track the document. Once document is added,
      *  DocumentListener is connected and tracks all document changes
      */
     private fun addTaskFile(virtualFile: VirtualFile, task: Task, project: Project) {
@@ -245,5 +245,15 @@ object TaskFileHandler {
                 projectToTaskToFiles[project]?.entries?.firstOrNull { it.value == virtualFile }?.key
             }.firstOrNull()
         }
+    }
+
+    fun deleteAllProjectFiles(project: Project) {
+        projectToTaskToFiles[project]?.entries?.forEach { (task, file) ->
+            logger.info("Deleting task files for task ${task.key}")
+            ApplicationManager.getApplication().runWriteAction {
+                file.delete(this)
+            }
+        }
+        projectToTaskToFiles.remove(project)
     }
 }
