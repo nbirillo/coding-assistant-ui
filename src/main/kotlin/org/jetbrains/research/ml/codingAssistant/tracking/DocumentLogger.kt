@@ -132,9 +132,6 @@ object DocumentLogger {
                     hintLoggedData.getData(Unit) +
                     UiLoggedData.getData(Unit)
         )
-        logPrinter.csvPrinter.printRecord(
-            DocumentLoggedData.getData(document) + UiLoggedData.getData(Unit)
-        )
     }
 
     fun getDocumentLogPrinter(document: Document): DocumentLogPrinter? {
