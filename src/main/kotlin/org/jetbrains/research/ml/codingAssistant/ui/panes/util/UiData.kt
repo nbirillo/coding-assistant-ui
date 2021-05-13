@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.messages.Topic
 import javafx.application.Platform
 import org.jetbrains.research.ml.codingAssistant.models.Keyed
-import org.jetbrains.research.ml.codingAssistant.ui.panes.SurveyUiData
 import java.util.function.Consumer
 import kotlin.properties.Delegates
 

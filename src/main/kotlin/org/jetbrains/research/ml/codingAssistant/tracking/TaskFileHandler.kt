@@ -23,7 +23,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.io.ReadOnlyAttributeUtil
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.research.ml.codingAssistant.Plugin
-import org.jetbrains.research.ml.codingAssistant.models.Extension
 import org.jetbrains.research.ml.codingAssistant.models.Language
 import org.jetbrains.research.ml.codingAssistant.models.Task
 import org.jetbrains.research.ml.codingAssistant.server.PluginServer

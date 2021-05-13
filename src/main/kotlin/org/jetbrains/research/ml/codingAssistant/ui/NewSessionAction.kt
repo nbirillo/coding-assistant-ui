@@ -2,8 +2,6 @@ package org.jetbrains.research.ml.codingAssistant.ui
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.ApplicationManager
-import org.jetbrains.research.ml.codingAssistant.server.PluginServer
 import org.jetbrains.research.ml.codingAssistant.server.TrackerQueryExecutor
 import org.jetbrains.research.ml.codingAssistant.tracking.StoredInfoWrapper
 import org.jetbrains.research.ml.codingAssistant.tracking.TaskFileHandler
